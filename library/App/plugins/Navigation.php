@@ -168,7 +168,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 					'params' => array(
 						'employeeid' => $employeeId
 					),
-					'route' => 'module_full_path'
+					'route' => 'module_full_path_employeeid'
 				));
 				break;
 				

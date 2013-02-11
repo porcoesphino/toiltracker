@@ -17,7 +17,7 @@ class App_EmployeeController extends Zend_Controller_Action
     public function postAction()
     {
         // action body    	 
-        $form = new Application_Form_Employee();
+        $form = new App_Form_Employee();
         $form->setMethod(Zend_Form::METHOD_POST);
         $form->setAction('/App/Employee/post/');
     	$form->getElement('save')->setLabel('Add');
@@ -59,7 +59,7 @@ class App_EmployeeController extends Zend_Controller_Action
         //If no args, then redirect to index, requesting a 'put' selection.
     	$request = $this->getRequest();
     	
-    	$form = new Application_Form_Employee();
+    	$form = new App_Form_Employee();
     	$form->setMethod(Zend_Form::METHOD_POST);
     	$form->setAction('/App/Employee/put/id/' . $request->getParam('id'));
     	$form->getElement('save')->setLabel('Update');

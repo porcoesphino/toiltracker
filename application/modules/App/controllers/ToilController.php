@@ -26,7 +26,7 @@ class App_ToilController extends Zend_Controller_Action
     	$employeeId = $request->getParam('employeeid');
     	$toilAction = $request->getParam('toilaction');
     	
-    	$form = new Application_Form_Toil();
+    	$form = new App_Form_Toil();
         $form->setMethod(Zend_Form::METHOD_POST);
         $form->setAction('/App/Toil/post/employeeid/' . $employeeId . '/toilaction/' . $toilAction);
         $form->getElement('save')->setLabel('Record');
@@ -84,7 +84,7 @@ class App_ToilController extends Zend_Controller_Action
     {
     	$request = $this->getRequest();
     	
-    	$form = new Application_Form_Toil();
+    	$form = new App_Form_Toil();
     	$form->setMethod(Zend_Form::METHOD_POST);
     	$form->setAction('/App/Toil/put/id/' . $request->getParam('id'));
     	$form->getElement('save')->setLabel('Update');
