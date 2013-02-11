@@ -1,0 +1,33 @@
+<div id="view-content">
+	<form id="<?php echo $this->form->getName(); ?>"
+		name="<?php echo $this->form->getName(); ?>"
+		action="<?php echo $this->form->getAction(); ?>"
+		method="<?php echo $this->form->getMethod(); ?>">
+		
+		<?php echo $this->form->getElement('id'); ?>
+		<fieldset>
+			<label for="<?php echo $this->form->getElement('name')->getName(); ?>">Name:*</label>
+			<?php echo $this->form->getElement('name'); ?>
+		</fieldset>
+		
+		<fieldset>
+			<label for="<?php echo $this->form->getElement('email')->getName(); ?>">Email:</label>
+			<?php echo $this->form->getElement('email'); ?>
+		</fieldset>
+		
+		<fieldset>
+			<?php echo $this->form->getElement('save'); ?>
+			<?php 
+				$url = $this->getHelper('Url')->url(
+					array(
+						'module' => 'App', 
+						'controller' => 'Employee', 
+						'action' => 'index'
+					),
+					'module_partial_path',
+					true);
+				echo $this->getHelper('Anchor')->anchor($url, 'Cancel');
+			?>
+		</fieldset>
+	</form>
+</div>

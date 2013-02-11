@@ -1,0 +1,18 @@
+<?php echo $this->getHelper('Doctype')->setDoctype('HTML5'); ?>
+<html>
+<head>
+	<?php echo $this->getHelper('HeadMeta')->setCharset('UTF-8'); ?>
+</head>
+<body>
+<div id="content">
+	
+	<div id="nav">
+		<?php echo $this->getHelper('Navigation')->menu(); ?>
+	</div>
+	
+	<div id="main">
+		<?php echo $this->layout()->content; ?>
+	</div>
+</div>
+</body>
+</html>

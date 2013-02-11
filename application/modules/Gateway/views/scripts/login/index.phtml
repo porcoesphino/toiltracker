@@ -1,0 +1,36 @@
+<div id="view-content">
+<?php
+	$errorMessages = $this->form->getErrorMessages();
+	if($errorMessages != null) {
+		$isFirst = true;
+		foreach($errorMessages as $currentMessage) {
+			if($isFirst) {
+				$isFirst = false;
+				echo $currentMessage;
+			}
+			else {
+				echo '<br>' . $errorMessage;
+			}
+		}
+	}
+?>
+<form id="<?php echo $this->form->getName(); ?>"
+	name="<?php echo $this->form->getName(); ?>"
+	method="<?php echo $this->form->getMethod(); ?>"
+	action="<?php echo $this->form->getAction(); ?>">
+	
+	<fieldset>
+		<label for="<?php echo $this->form->email->getName(); ?>">Email:</label>
+		<?php echo $this->form->email; ?>
+	</fieldset>
+	
+	<fieldset>
+		<label for="<?php echo $this->form->password->getName(); ?>">Password:</label>
+		<?php echo $this->form->password; ?>
+	</fieldset>
+	
+	<fieldset>
+		<?php echo $this->form->login; ?>
+	</fieldset>
+</form>
+</div>

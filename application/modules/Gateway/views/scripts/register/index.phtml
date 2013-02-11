@@ -1,0 +1,52 @@
+<div id="view-content">
+<form id="<?php echo $this->form->getName(); ?>"
+	name="<?php echo $this->form->getName(); ?>"
+	method="<?php echo $this->form->getMethod(); ?>"
+	action="<?php echo $this->form->getAction(); ?>">
+	
+	<fieldset>
+		<label for="<?php echo $this->form->name->getName(); ?>">Name:</label>
+		<?php echo $this->form->name; ?>
+	</fieldset>
+	
+	<fieldset>
+		<label for="<?php echo $this->form->email->getName(); ?>">Email:</label>
+		<?php echo $this->form->email; ?>
+
+		<label for="<?php echo $this->form->confirm_email->getName(); ?>">Confirm email:</label>
+		<?php echo $this->form->confirm_email; ?>
+	</fieldset>
+	
+	<fieldset>
+		<label for="<?php echo $this->form->password->getName(); ?>">Password:</label>
+		<?php echo $this->form->password; ?>
+
+		<label for="<?php echo $this->form->confirm_password->getName(); ?>">Confirm password:</label>
+		<?php echo $this->form->confirm_password; ?>
+	</fieldset>
+	
+	<fieldset>
+		<label for="<?php echo $this->form->canned_questions->getName(); ?>">Security question 1:</label>
+		<?php echo $this->form->canned_questions; ?>
+		
+		<label for="<?php echo $this->form->canned_answer->getName(); ?>">Security answer 1:</label>
+		<?php echo $this->form->canned_answer; ?>
+	</fieldset>
+	
+	<fieldset>
+		<label for="<?php echo $this->form->user_created_question->getName(); ?>">Security question 2:</label>
+		<?php echo $this->form->user_created_question; ?>
+		
+		<label for="<?php echo $this->form->user_created_answer->getName(); ?>">Security answer 2:</label>
+		<?php echo $this->form->user_created_answer; ?>
+	</fieldset>
+	
+	<fieldset>
+		<?php echo $this->form->captcha; ?>
+	</fieldset>
+	
+	<fieldset>
+		<?php echo $this->form->register; ?>
+	</fieldset>
+</form>
+</div>

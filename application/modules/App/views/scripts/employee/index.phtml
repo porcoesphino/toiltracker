@@ -1,0 +1,15 @@
+<div id="view-content">
+	<h2>Employee summary</h2>
+	<?php foreach($this->employees as $currentEmployee): ?>	
+		
+		<?php
+			echo $currentEmployee->getName() . ' ' . $currentEmployee->getToilAvailable();
+		?>
+		
+		<a href="/App/Toil/index/employeeid/<?php echo $currentEmployee->getId(); ?>">Toil summary</a>
+		<a href="/App/Employee/put/id/<?php echo $currentEmployee->getId(); ?>">Edit</a>
+		<a href="/App/Employee/delete/id/<?php echo $currentEmployee->getId(); ?>">Delete</a>
+		<br>
+		
+	<?php endforeach; ?>
+</div>

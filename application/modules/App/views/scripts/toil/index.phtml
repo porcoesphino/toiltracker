@@ -1,0 +1,21 @@
+<div id="view-content">
+	<h2>Toil summary</h2>
+	<?php foreach($this->toilList as $currentToil): ?>	
+		
+		<?php
+			echo $currentToil->getDate() . ' ';
+			echo $currentToil->getDuration() . ' ';
+			
+			if($currentToil->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
+				echo 'Accrued ';
+			}
+			else {
+				echo 'Used ';
+			}
+		?>
+		<a href="/App/Toil/put/id/<?php echo $currentToil->getId(); ?>">Edit</a>
+		<a href="/App/Toil/delete/id/<?php echo $currentToil->getId(); ?>/employeeid/<?php echo $currentToil->getEmployeeId(); ?>">Delete</a>
+		<br>
+		
+	<?php endforeach; ?>
+</div>

@@ -1,0 +1,52 @@
+<div id="view-content">
+	<form id="<?php echo $this->form->getName(); ?>"
+		name="<?php echo $this->form->getName(); ?>"
+		action="<?php echo $this->form->getAction(); ?>"
+		method="<?php echo $this->form->getMethod(); ?>">
+				
+		<?php echo $this->form->getElement('id'); ?>
+		<?php
+			$employeeIdElement = $this->form->getElement('employee_id');
+			if(!empty($this->employee_id)) {
+				$employeeIdElement->setValue($this->employee_id);
+			}
+			echo $employeeIdElement; 
+		?>
+		
+		<fieldset>
+			<label for="<?php echo $this->form->getElement('days')->getName(); ?>">Date <?php echo $this->toil_action; ?>:</label>
+			<?php echo $this->form->getElement('days'); ?>
+			<?php echo $this->form->getElement('months'); ?>
+			<?php echo $this->form->getElement('years'); ?>
+		</fieldset>
+		
+		<fieldset>
+			<label for="<?php echo $this->form->getElement('hours')->getName(); ?>">Hours:</label>
+			<?php echo $this->form->getElement('hours'); ?>
+			
+			<label for="<?php echo $this->form->getElement('minutes')->getName(); ?>">Minutes:</label>
+			<?php echo $this->form->getElement('minutes'); ?>
+		</fieldset>
+		
+		<fieldset>
+			<label for="<?php echo $this->form->getElement('notes')->getName(); ?>">Notes:</label>
+			<?php echo $this->form->getElement('notes'); ?>
+		</fieldset>
+		
+		<fieldset>
+			<?php echo $this->form->getElement('save'); ?>
+			<?php 
+				$url = $this->getHelper('Url')->url(
+					array(
+						'module' => 'App', 
+						'controller' => 'Toil', 
+						'action' => 'index',
+						'employeeid' => $this->employee_id
+					),
+					'module_full_path_employeeid',
+					true);
+				echo $this->getHelper('Anchor')->anchor($url, 'Cancel');
+			?>
+		</fieldset>
+	</form>
+</div>
