@@ -1,15 +1,14 @@
 <?php
 
-class Gateway_LoginController extends Zend_Controller_Action
-{
+class App_LoginController extends Zend_Controller_Action {
 
-    public function init()
-    {
+    public function init() {
+    	
         /* Initialize action controller here */
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
+    	
     	if(Zend_Auth::getInstance()->hasIdentity()) {
     		
     		$helper = $this->_helper->getHelper('Redirector');
@@ -17,14 +16,14 @@ class Gateway_LoginController extends Zend_Controller_Action
         		array(
         			'action' => 'already-identified', 
         			'controller' => 'Login', 
-        			'module' => 'Gateway'
+        			'module' => 'App'
         		),
         		'module_full_path',
         		true
         	);
         }
         
-        $form = new Gateway_Form_Login();
+        $form = new App_Form_Login();
 		$request = $this->getRequest();
 		if($request->isPost()) {
 			if($form->isValid($request->getPost())) {
@@ -77,13 +76,12 @@ class Gateway_LoginController extends Zend_Controller_Action
         $this->view->form = $form;
     }
 
-    public function alreadyIdentifiedAction()
-    {
+    public function alreadyIdentifiedAction() {
         // action body
     }
 
-    public function logoutAction()
-    {
+    public function logoutAction() {
+    	
         // action body
         Zend_Auth::getInstance()->clearIdentity();
         $helper = $this->_helper->getHelper('Redirector');
@@ -91,17 +89,16 @@ class Gateway_LoginController extends Zend_Controller_Action
         	array(
         		'action'=> 'index', 
         		'controller' => 'Login', 
-        		'module' => 'Gateway'
+        		'module' => 'App'
         	),
         	'module_partial_path',
         	true
         );
     }
 
-    public function changePasswordAction()
-    {
+    public function changePasswordAction() {
         // action body
-        $form = new Gateway_Form_ChangePassword();
+        $form = new App_Form_ChangePassword();
         $request = $this->getRequest();
         if($request->isPost()) {
         	
@@ -161,12 +158,9 @@ class Gateway_LoginController extends Zend_Controller_Action
         $this->view->form = $form;
     }
 
-    public function passwordChangedAction()
-    {
+    public function passwordChangedAction() {
         // action body
     }
-
-
 }
 
 

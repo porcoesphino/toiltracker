@@ -1,6 +1,6 @@
 <?php
 
-class Gateway_RegisterController extends Zend_Controller_Action
+class App_RegisterController extends Zend_Controller_Action
 {
 
     public function init()
@@ -15,7 +15,7 @@ class Gateway_RegisterController extends Zend_Controller_Action
     public function indexAction()
     {
         // action body
-        $form = new Gateway_Form_Register();
+        $form = new App_Form_Register();
         $request = $this->getRequest();
         if($request->isPost()) {
         	

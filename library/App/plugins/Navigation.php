@@ -2,71 +2,110 @@
 
 class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 	
+	protected $_container;
+	
 	public function preDispatch(Zend_Controller_Request_Abstract $request) {
+	
+		$this->_container = new Zend_Navigation();
 		
-		$container = new Zend_Navigation();
-		
-		if(preg_match("/default|gateway/i", $request->getModuleName())) {
-			
-			//Add the standard links (home/news/about etc)
-			$container->addPages($this->_addDefaultLinks());
-			
-			if(Zend_Auth::getInstance()->hasIdentity()) {
+		if($request->getModuleName() == 'default') {
 				
-				$container->addPage($this->_addGenericLink('app_home'));
-				$container->addPage($this->_addGenericLink('logout'));
-			}
-			else {
-				
-				$container->addPage($this->_addGenericLink('login'));
-				$container->addPage($this->_addGenericLink('register'));
-			}
+			$this->_configureWebsiteLinks($request);
 		}
 		else if($request->getModuleName() == 'App') {
-			
-			if($request->getControllerName() == 'Employee') {
-			
-				switch($request->getActionName()) {
+				
+			if(($request->getControllerName() == 'Login') || ($request->getControllerName() == 'Register')) {
+				
+				//User is still external to the application, so show the website links.
+				$this->_configureWebsiteLinks($request);
+			}
+			else if($request->getControllerName() == 'Employee') {
 					
-					case 'index':
-						$container->addPage($this->_addEmployeeLink('add'));
-						break;
-						
-					case 'post':
-						$container->addPage($this->_addEmployeeLink('summary'));
-						break;
-						
-					case 'put':
-						$container->addPage($this->_addEmployeeLink('summary'));
-						break;
-				}
+				$this->_configureEmployeeLinks($request);
 			}
 			else if($request->getControllerName() == 'Toil') {
-				
-				switch($request->getActionName()) {
-					case 'index':						
-						$container->addPage($this->_addEmployeeLink('summary'));
-						$container->addPage($this->_addToilLink('post', $request->getParam('employeeid'), 'accrue'));
-						$container->addPage($this->_addToilLink('post', $request->getParam('employeeid'), 'use'));
-						break;
-						
-					case 'post':
-						$container->addPage($this->_addToilLink('summary', $request->getParam('employeeid')));
-						break;
-						
-					case 'put':
-						//Calculate the employeeid from the toil id.
-						$mapper = new Application_Model_ToilMapper();
-						$employeeId = $mapper->getEmployeeIdFromToilId($request->getParam('id'));
-						$container->addPage($this->_addToilLink('summary', $employeeId));
-						break;
-				}
+	
+				$this->_configureToilLinks($request);
 			}
-			$container->addPage($this->_addGenericLink('change_password'));
-			$container->addPage($this->_addGenericLink('logout'));
+			else if($request->getControllerName() == 'Reidentify') {
+				
+				$this->_configureCredentialLinks($request);
+			}
+		}
+	
+		Zend_Layout::getMvcInstance()->getView()->getHelper('Navigation')->navigation($this->_container);
+	}
+	
+	protected function _configureWebsiteLinks(Zend_Controller_Request_Abstract $request) {
+		
+		//Add the standard links (home/news/about etc)
+		$this->_addDefaultLinks();
+		
+		//Add auth-dependent links
+		if(Zend_Auth::getInstance()->hasIdentity()) {
+		
+			$this->_addGatewayLink('app_home');
+			$this->_addGatewayLink('logout');
+		}
+		else {
+		
+			$this->_addGatewayLink('login');
+			$this->_addGatewayLink('register');
+		}
+	}
+	
+	public function _configureEmployeeLinks(Zend_Controller_Request_Abstract $request) {
+		
+		switch($request->getActionName()) {
+				
+			case 'index':
+				$this->_addEmployeeLink('add'); 
+				break;
+		
+			case 'post':
+				$this->_addEmployeeLink('summary');
+				break;
+		
+			case 'put':
+				$this->_addEmployeeLink('summary');
+				break;
 		}
 		
-		Zend_Layout::getMvcInstance()->getView()->getHelper('Navigation')->navigation($container);
+		$this->_addGatewayLink('change_password');
+		$this->_addGatewayLink('logout');
+	}
+	
+	public function _configureToilLinks(Zend_Controller_Request_Abstract $request) {
+		
+		switch($request->getActionName()) {
+			
+			case 'index':
+				$this->_addEmployeeLink('summary');
+				$this->_addToilLink('post', $request->getParam('employeeid'), 'accrue');
+				$this->_addToilLink('post', $request->getParam('employeeid'), 'use');
+				break;
+		
+			case 'post':
+				$this->_addToilLink('summary', $request->getParam('employeeid'));
+				break;
+		
+			case 'put':
+				//Calculate the employeeid from the toil id.
+				$mapper = new Application_Model_ToilMapper();
+				$employeeId = $mapper->getEmployeeIdFromToilId($request->getParam('id'));
+				$this->_addToilLink('summary', $employeeId);
+				break;
+		}
+		
+		$this->_addGatewayLink('change_password');
+		$this->_addGatewayLink('logout');
+	}
+	
+	public function _configureCredentialsLinks(Zend_Controller_Request_Abstract $request) {
+	
+		$this->_addEmployeeLink('summary');
+		$this->_addGatewayLink('change_password');
+		$this->_addGatewayLink('logout');
 	}
 	
 	protected function _addDefaultLinks() {
@@ -79,6 +118,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 			'action' => 'index',
 			'route' => 'root'
 		));
+		
 		$pages[] = new Zend_Navigation_Page_Mvc(array(
 			'label' => 'About',
 			'module' => 'default',
@@ -86,6 +126,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 			'action' => 'about',
 			'route' => 'default'
 		));
+		
 		$pages[] = new Zend_Navigation_Page_Mvc(array(
 			'label' => 'Contact',
 			'module' => 'default',
@@ -93,22 +134,23 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 			'action' => 'contact',
 			'route' => 'default'
 		));
-		return $pages;
+		
+		$this->_container->addPages($pages);	
 	}
 	
-	protected function _addGenericLink($linkName) {
+	protected function _addGatewayLink($linkName) {
 		
-		$page = null;
 		switch($linkName) {
 			
 			case 'login':
 				$page = new Zend_Navigation_Page_Mvc(array(
 					'label' => 'Login',
-					'module' => 'Gateway',
+					'module' => 'App',
 					'controller' => 'Login',
 					'action' => 'index',
 					'route' => 'module_partial_path'
 				));
+				$this->_container->addPage($page);
 				break;
 				
 			case 'app_home':
@@ -119,44 +161,46 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 					'action' => 'index',
 					'route' => 'module_partial_path'
 				));
+				$this->_container->addPage($page);
 				break;
 				
 			case 'logout':
 				$page = new Zend_Navigation_Page_Mvc(array(
 					'label' => 'Logout',
-					'module' => 'Gateway',
+					'module' => 'App',
 					'controller' => 'Login',
 					'action' => 'logout',
 					'route' => 'module_full_path'
 				));
+				$this->_container->addPage($page);
 				break;
 				
 			case 'register':
 				$page = new Zend_Navigation_Page_Mvc(array(
 					'label' => 'Register',
-					'module' => 'Gateway',
+					'module' => 'App',
 					'controller' => 'Register',
 					'action' => 'index',
 					'route' => 'module_partial_path'
 				));
+				$this->_container->addPage($page);
 				break;
 			
 			case 'change_password':
 				$page = new Zend_Navigation_Page_Mvc(array(
 					'label' => 'Change password',
-					'module' => 'Gateway',
-					'controller' => 'Login',
+					'module' => 'App',
+					'controller' => 'Credentials',
 					'action' => 'change-password',
 					'route' => 'module_full_path'
 				));
+				$this->_container->addPage($page);
 				break;
 		}
-		return $page;
 	}
 	
 	protected function _addToilLink($linkName, $employeeId, $toilAction = null) {
 	
-		$page = null;
 		switch($linkName) {
 				
 			case 'summary':
@@ -170,12 +214,18 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 					),
 					'route' => 'module_full_path_employeeid'
 				));
+				$this->_container->addPage($page);
 				break;
 				
 			case 'post':
 				
-				if($toilAction == 'accrue') { $label = 'Record toil accrued'; }
-				else { $label = 'Record toil used'; }
+				if($toilAction == 'accrue') { 	
+					$label = 'Record toil accrued'; 
+				}
+				else { 
+					$label = 'Record toil used'; 
+				}
+				
 				$page = new Zend_Navigation_Page_Mvc(array(
 					'label' => $label,
 					'module' => 'App',
@@ -187,6 +237,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 					),
 					'route' => 'module_full_path_employeeid_action'
 				));
+				$this->_container->addPage($page);
 				break;
 				
 			case 'put':
@@ -200,14 +251,13 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 					),
 					'route' => 'module_full_path',
 				));
+				$this->_container->addPage($page);
 				break;
 		}
-		return $page;
 	}
 	
 	protected function _addEmployeeLink($linkName) {
 		
-		$page = null;
 		switch($linkName) {
 			
 			case 'summary':
@@ -218,6 +268,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 					'action' => 'index',
 					'route' => 'module_partial_path'
 				));
+				$this->_container->addPage($page);
 				break;
 				
 			case 'cancel':
@@ -228,6 +279,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 						'action' => 'index',
 						'route' => 'module_partial_path'
 					));
+					$this->_container->addPage($page);
 					break;
 					
 			case 'add':
@@ -238,8 +290,8 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 					'action' => 'post',
 					'route' => 'module_full_path',
 				));
+				$this->_container->addPage($page);
 				break;
 		}
-		return $page;
 	}
 }

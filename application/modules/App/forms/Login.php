@@ -1,13 +1,13 @@
 <?php
 
-class Gateway_Form_Login extends Zend_Form
+class App_Form_Login extends Zend_Form
 {
 
     public function init()
     {
     	$this->setName('login');
     	$this->setMethod('post');
-    	$this->setAction('/Gateway/Login');
+    	$this->setAction('/App/Login');
     	
     	$email = new Zend_Form_Element_Text('email');
     	$email->setRequired(true);

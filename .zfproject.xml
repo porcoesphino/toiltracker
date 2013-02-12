@@ -49,65 +49,15 @@
         <modelFile modelName="User"/>
       </modelsDirectory>
       <modulesDirectory>
-        <moduleDirectory moduleName="Gateway">
+        <moduleDirectory moduleName="App">
           <configsDirectory enabled="false"/>
           <controllersDirectory>
-            <controllerFile controllerName="Login">
+            <controllerFile controllerName="Credentials">
               <actionMethod actionName="index"/>
-              <actionMethod actionName="alreadyIdentified"/>
-              <actionMethod actionName="logout"/>
               <actionMethod actionName="changePassword"/>
               <actionMethod actionName="passwordChanged"/>
             </controllerFile>
-            <controllerFile controllerName="Register">
-              <actionMethod actionName="index"/>
-              <actionMethod actionName="confirmRegistration"/>
-            </controllerFile>
           </controllersDirectory>
-          <formsDirectory>
-            <formFile formName="Login"/>
-            <formFile formName="Register"/>
-            <formFile formName="ChangePassword"/>
-          </formsDirectory>
-          <layoutsDirectory enabled="false">
-            <layoutScriptsDirectory enabled="false"/>
-          </layoutsDirectory>
-          <modelsDirectory>
-            <dbTableDirectory enabled="false"/>
-          </modelsDirectory>
-          <servicesDirectory enabled="false"/>
-          <viewsDirectory>
-            <viewScriptsDirectory>
-              <viewControllerScriptsDirectory forControllerName="Login">
-                <viewScriptFile forActionName="index"/>
-              </viewControllerScriptsDirectory>
-              <viewControllerScriptsDirectory forControllerName="Login"/>
-              <viewControllerScriptsDirectory forControllerName="Login">
-                <viewScriptFile forActionName="alreadyIdentified"/>
-              </viewControllerScriptsDirectory>
-              <viewControllerScriptsDirectory forControllerName="Login">
-                <viewScriptFile forActionName="logout"/>
-              </viewControllerScriptsDirectory>
-              <viewControllerScriptsDirectory forControllerName="Register">
-                <viewScriptFile forActionName="index"/>
-              </viewControllerScriptsDirectory>
-              <viewControllerScriptsDirectory forControllerName="Register">
-                <viewScriptFile forActionName="confirmRegistration"/>
-              </viewControllerScriptsDirectory>
-              <viewControllerScriptsDirectory forControllerName="Login">
-                <viewScriptFile forActionName="changePassword"/>
-              </viewControllerScriptsDirectory>
-              <viewControllerScriptsDirectory forControllerName="Login">
-                <viewScriptFile forActionName="passwordChanged"/>
-              </viewControllerScriptsDirectory>
-            </viewScriptsDirectory>
-            <viewHelpersDirectory/>
-            <viewFiltersDirectory/>
-          </viewsDirectory>
-        </moduleDirectory>
-        <moduleDirectory moduleName="App">
-          <configsDirectory enabled="false"/>
-          <controllersDirectory/>
           <formsDirectory enabled="false"/>
           <layoutsDirectory enabled="false">
             <layoutScriptsDirectory enabled="false"/>
@@ -117,7 +67,17 @@
           </modelsDirectory>
           <servicesDirectory enabled="false"/>
           <viewsDirectory>
-            <viewScriptsDirectory/>
+            <viewScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Credentials">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Credentials">
+                <viewScriptFile forActionName="changePassword"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Credentials">
+                <viewScriptFile forActionName="passwordChanged"/>
+              </viewControllerScriptsDirectory>
+            </viewScriptsDirectory>
             <viewHelpersDirectory/>
             <viewFiltersDirectory/>
           </viewsDirectory>

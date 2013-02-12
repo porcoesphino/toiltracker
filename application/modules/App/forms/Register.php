@@ -1,13 +1,13 @@
 <?php
 
-class Gateway_Form_Register extends Zend_Form
+class App_Form_Register extends Zend_Form
 {
 
     public function init()
     {
         /* Form Elements & Other Definitions Here ... */
         $this->setName('register');
-        $this->setAction('/Gateway/Register');
+        $this->setAction('/App/Register');
         $this->setMethod('post');
         
         //Name section        	

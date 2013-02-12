@@ -1,6 +1,6 @@
 <?php
 
-class Gateway_Form_ChangePassword extends Zend_Form
+class App_Form_ChangePassword extends Zend_Form
 {
 
     public function init()
