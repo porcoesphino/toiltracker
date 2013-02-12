@@ -48,7 +48,8 @@ class App_CredentialsController extends Zend_Controller_Action
         			$redirect->gotoRoute(
         				array(
         					'action' => 'password-changed',
-        					'controller' => 'Credentials',
+        					'controller' => 'Credentials
+        						',
         					'module' => 'App'
         				),
         				'module_full_path',
