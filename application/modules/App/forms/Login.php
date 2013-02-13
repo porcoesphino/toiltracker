@@ -14,7 +14,7 @@ class App_Form_Login extends Zend_Form
     	$email->addValidator(new Zend_Validate_StringLength(array('max' => 45)), true);
     	$email->setAttrib('maxlength', 45);
     	$email->addValidator(new Zend_Validate_EmailAddress(), true);
-    	$email->addErrorMessage('Email address is incorrect.'); //Will supercede all validation messages.
+    	$email->addErrorMessage('Email address is incorrect.'); //Will apply to any validation failures.
     	$this->addElement($email);
     	
     	

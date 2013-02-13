@@ -1,16 +1,11 @@
 <?php
 
-class App_CredentialsController extends Zend_Controller_Action
+class App_ChangePasswordController extends Zend_Controller_Action
 {
 
     public function init()
     {
         /* Initialize action controller here */
-    }
-
-    public function indexAction()
-    {
-        // action body
     }
 
     public function changePasswordAction()
@@ -48,8 +43,7 @@ class App_CredentialsController extends Zend_Controller_Action
         			$redirect->gotoRoute(
         				array(
         					'action' => 'password-changed',
-        					'controller' => 'Credentials
-        						',
+        					'controller' => 'ChangePassword',
         					'module' => 'App'
         				),
         				'module_full_path',
@@ -78,7 +72,7 @@ class App_CredentialsController extends Zend_Controller_Action
 
     public function passwordChangedAction()
     {
-        // action body
+    	//Display on successful password change
     }
 
 

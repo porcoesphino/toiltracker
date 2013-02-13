@@ -63,5 +63,20 @@ class Application_Model_UserMapper
 		);
 		$table->update($insertData, $where);
 	}
+	
+	public function isCorrectEmail($email) {
+		
+		//find email in the database. If row found, return true, else return false.
+		$where = $this->_table->getAdapter()->quoteInto('email = ?', $email);
+		$select = $this->_table->select()->where($where);
+		$row = $this->_table->fetchRow($select);
+		
+		$returnVal = true;
+		if(empty($row)) {
+			
+			$returnVal = false;
+		}
+		return $returnVal;
+	}
 }
 

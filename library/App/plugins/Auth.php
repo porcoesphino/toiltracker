@@ -6,7 +6,9 @@ class App_Plugins_Auth extends Zend_Controller_Plugin_Abstract {
 	 * Ensure that the current user has access only to the resources they are
 	 * authenticated for.
 	 * 
-	 * @see Zend_Controller_Plugin_Abstract::preDispatch()
+	 * @todo
+	 * Shouldn't this class control logged-in access to the 'Login', 'Register' and 'ForgotPassword'
+	 * resources?
 	 */
 	public function preDispatch(Zend_Controller_Request_Abstract $request) {
 		
@@ -19,9 +21,22 @@ class App_Plugins_Auth extends Zend_Controller_Plugin_Abstract {
 			
 			//User is not logged in, however, they are still allowed to access the 'login' and
 			//'register' resources.
-			if(($request->getControllerName() == 'Login') || ($request->getControllerName() == 'Register')) {
+			if(($request->getControllerName() == 'Login') 
+				|| ($request->getControllerName() == 'Register')
+				|| ($request->getControllerName() == 'ForgotPassword')) {
 
 				return;
+			}
+			
+			//if controller is credentials and reidentifyEmailAction
+			if($request->getControllerName() == 'Credentials') {
+				
+				if($request->getActionName() == 'reidentify-email') {
+					
+					//User is not loggged in. However, if user has forgotten password then they need to be
+					//able to reset this. Allow access, therefore.
+					return;
+				}
 			}
 			
 			//User is not allowed access to the resource. Redirect user to the login.

@@ -14,7 +14,9 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 		}
 		else if($request->getModuleName() == 'App') {
 				
-			if(($request->getControllerName() == 'Login') || ($request->getControllerName() == 'Register')) {
+			if(($request->getControllerName() == 'Login')
+				|| ($request->getControllerName() == 'Register')
+				|| ($request->getControllerName() == 'ForgotPassword')) {
 				
 				//User is still external to the application, so show the website links.
 				$this->_configureWebsiteLinks($request);
@@ -27,9 +29,9 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 	
 				$this->_configureToilLinks($request);
 			}
-			else if($request->getControllerName() == 'Reidentify') {
+			else if($request->getControllerName() == 'ChangePassword') {
 				
-				$this->_configureCredentialLinks($request);
+				$this->_configureChangePasswordLinks($request);
 			}
 		}
 	
@@ -51,6 +53,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 		
 			$this->_addGatewayLink('login');
 			$this->_addGatewayLink('register');
+			$this->_addGatewayLink('forgot_password');
 		}
 	}
 	
@@ -101,7 +104,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 		$this->_addGatewayLink('logout');
 	}
 	
-	public function _configureCredentialsLinks(Zend_Controller_Request_Abstract $request) {
+	public function _configureChangePasswordLinks(Zend_Controller_Request_Abstract $request) {
 	
 		$this->_addEmployeeLink('summary');
 		$this->_addGatewayLink('change_password');
@@ -190,8 +193,19 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 				$page = new Zend_Navigation_Page_Mvc(array(
 					'label' => 'Change password',
 					'module' => 'App',
-					'controller' => 'Credentials',
+					'controller' => 'ChangePassword',
 					'action' => 'change-password',
+					'route' => 'module_full_path'
+				));
+				$this->_container->addPage($page);
+				break;
+				
+			case 'forgot_password':
+				$page = new Zend_Navigation_Page_Mvc(array(
+					'label' => 'Forgot password',
+					'module' => 'App',
+					'controller' => 'ForgotPassword',
+					'action' => 'confirm-email',
 					'route' => 'module_full_path'
 				));
 				$this->_container->addPage($page);

@@ -1,0 +1,20 @@
+<div id="view-content">
+<form id="<?php echo $this->form->getName(); ?>"
+	name="<?php echo $this->form->getName(); ?>"
+	method="<?php echo $this->form->getMethod(); ?>"
+	action="<?php echo $this->form->getAction(); ?>">
+
+	<fieldset>
+		<label for="<?php echo $this->form->email->getName(); ?>">Email:</label>
+		<?php echo $this->form->email; ?>
+	</fieldset>
+	
+	<fieldset>
+		<?php echo $this->form->captcha; ?>
+	</fieldset>
+	
+	<fieldset>
+		<?php echo $this->form->next; ?>
+	</fieldset>
+</form>
+</div>
