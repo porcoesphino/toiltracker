@@ -62,6 +62,7 @@
               <actionMethod actionName="index"/>
               <actionMethod actionName="reidentifyEmail"/>
               <actionMethod actionName="confirmQuestions"/>
+              <actionMethod actionName="confirmNotification"/>
             </controllerFile>
             <controllerFile controllerName="ChangePassword">
               <actionMethod actionName="index"/>
@@ -71,6 +72,7 @@
           </controllersDirectory>
           <formsDirectory enabled="false">
             <formFile formName="ReidentifyEmail"/>
+            <formFile formName="ConfirmQuestions"/>
           </formsDirectory>
           <layoutsDirectory enabled="false">
             <layoutScriptsDirectory enabled="false"/>
@@ -110,6 +112,9 @@
               </viewControllerScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="ForgotPassword">
                 <viewScriptFile forActionName="confirmQuestions"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="ForgotPassword">
+                <viewScriptFile forActionName="confirmNotification"/>
               </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
             <viewHelpersDirectory/>

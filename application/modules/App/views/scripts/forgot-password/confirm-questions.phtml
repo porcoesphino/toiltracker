@@ -1,4 +1,21 @@
-<br /><br />
 <div id="view-content">
-	<p>View script for controller <b>ForgotPassword</b> and script/action name <b>confirmQuestions</b></p>
+<form id="<?php echo $this->form->getName(); ?>"
+	name="<?php echo $this->form->getName(); ?>"
+	method="<?php echo $this->form->getMethod(); ?>"
+	action="<?php echo $this->form->getAction(); ?>">
+
+	<fieldset>
+		<h4><?php echo $this->canned_question; ?></h4>
+		<?php echo $this->form->canned_answer; ?>
+	</fieldset>
+	
+	<fieldset>
+		<h4><?php echo $this->user_created_question; ?></h4>
+		<?php echo $this->form->user_created_answer; ?>
+	</fieldset>
+	
+	<fieldset>
+		<?php echo $this->form->next; ?>
+	</fieldset>
+</form>
 </div>

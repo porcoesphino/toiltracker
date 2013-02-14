@@ -1,0 +1,14 @@
+<div id="view-content">
+	Your new password has now been sent. Click 
+	<a href="<?php
+		echo $this->url(
+			array(
+				'module' => 'App',
+				'controller' => 'Login',
+				'action' => 'index'
+			),
+			'module_partial_path',
+			true);
+		?>">here</a> 
+	to login.
+</div>

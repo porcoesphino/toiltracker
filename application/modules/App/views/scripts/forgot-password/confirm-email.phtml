@@ -1,3 +1,18 @@
+<?php
+	$errorMessages = $this->form->getErrorMessages();
+	if($errorMessages != null) {
+		$isFirst = true;
+		foreach($errorMessages as $currentMessage) {
+			if($isFirst) {
+				$isFirst = false;
+				echo $currentMessage;
+			}
+			else {
+				echo '<br>' . $errorMessage;
+			}
+		}
+	}
+?>
 <div id="view-content">
 <form id="<?php echo $this->form->getName(); ?>"
 	name="<?php echo $this->form->getName(); ?>"

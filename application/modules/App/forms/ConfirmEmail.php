@@ -6,7 +6,7 @@ class App_Form_ConfirmEmail extends Zend_Form
     public function init()
     {
         //Email, capthca, submit
-    	$this->setName('reidentify-email');
+    	$this->setName('confirm-email');
     	$this->setMethod('post');
     	$this->setAction('/App/ForgotPassword/confirm-email');
     	 
