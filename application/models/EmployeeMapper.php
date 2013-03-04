@@ -2,15 +2,19 @@
 
 class Application_Model_EmployeeMapper
 {
-	public function fetchSummaries() {
+	public function fetchSummaries($teamId) {
 		
 		$employees = new Application_Model_DbTable_Employees();
-		$employeeRowset = $employees->fetchAll();
+		$where = $employees->getAdapter()->quoteInto('team_id = ?', $teamId);
+		$select = $employees->select()->where($where);
+		$employeeRowset = $employees->fetchAll($select);
+		
 		$employeeArray = array();
 		foreach($employeeRowset as $currentEmployee) {
 		
 			$employee = new Application_Model_Employee();
 			$employee->setId($currentEmployee->id);
+			$employee->setTeamId($currentEmployee->team_id);
 			$employee->setName($currentEmployee->name);
 			$employee->setEmail($currentEmployee->email);
 			
@@ -33,7 +37,7 @@ class Application_Model_EmployeeMapper
 			
 			$employeeArray[] = $employee;
 		}
-				
+		
 		return $employeeArray;
 	}
 	
@@ -48,14 +52,16 @@ class Application_Model_EmployeeMapper
 		return $employee;
 	}
 	
-	public function insert($data) {
+	public function insert($teamId, $data) {
 		
 		$table = new Application_Model_DbTable_Employees();
 		$insertData = array(
+			'team_id' => $teamId,
 			'name' => $data['name'],
 			'email' => $data['email']
 		);
-		$table->insert($insertData);
+		$primaryKey = $table->insert($insertData);
+		return $primaryKey;
 	}
 	
 	public function update($data, $where) {

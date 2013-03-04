@@ -5,21 +5,64 @@ class App_ForgotPasswordController extends Zend_Controller_Action
 
     public function init()
     {
-        /* Initialize action controller here */
+        //Check to ensure the user is permitted to access the actions they are requesting.
+    	$isStepAllowed = false;
+    	if($this->getRequest()->getActionName() == 'confirm-email') {
+    		
+    		$stepNumber = Application_Model_ForgotPasswordProcessManager::STEP1;
+    		$isStepAllowed = Application_Model_ForgotPasswordProcessManager::getInstance()->getIsStepAllowed($stepNumber);
+    		if(!$isStepAllowed) {
+    			
+    			//Redirect to the home page.
+    			$redirector = $this->_helper->getHelper('Redirector');
+    			$redirector->gotoRoute(
+    				array(
+    					'module' => 'default',
+    					'controller' => 'Index',
+    					'action' => 'index'
+    				),
+    				'root',
+    				true
+    			);
+    		}
+    	}
+    	
+    	if($this->getRequest()->getActionName() == 'confirm-questions') {
+    		
+    		$stepNumber = Application_Model_ForgotPasswordProcessManager::STEP2;
+    		$isStepAllowed = Application_Model_ForgotPasswordProcessManager::getInstance()->getIsStepAllowed($stepNumber);
+    	}
+    	else if($this->getRequest()->getActionName() == 'confirm-notification') {
+    	
+    		$stepNumber = Application_Model_ForgotPasswordProcessManager::STEP3;
+    		$isStepAllowed = Application_Model_ForgotPasswordProcessManager::getInstance()->getIsStepAllowed($stepNumber);
+    	}
+    	
+    	if(!$isStepAllowed) {
+    		
+    		//Redirect to Step1.
+    		$redirector = $this->_helper->getHelper('Redirector');
+    		$redirector->gotoRoute(
+    			array(
+    				'module' => 'App',
+    				'controller' => 'ForgotPassword',
+    				'action' => 'confirm-email'
+    			),
+    			'module_full_path',
+    			true
+    		);
+    	}
     }
 
     /**
      * @todo
      * Lock the account if the user fails five times at this stage?
-     *
-     *
      */
     public function confirmEmailAction()
-    {
-    	$session = new Zend_Session_Namespace('forgotten_password');
-    	$session->isEmailConfirmed = false;
+    {    	
+    	Application_Model_ForgotPasswordProcessManager::getInstance()->resetProcess();
     	
-        $form = new App_Form_ConfirmEmail();
+    	$form = new App_Form_ConfirmEmail();
         $request = $this->getRequest();
         if($request->isPost()) {
         	
@@ -28,14 +71,16 @@ class App_ForgotPasswordController extends Zend_Controller_Action
         		//Form is valid, now check to ensure the email is valid
         		$formValues = $form->getValues();
         		$mapper = new Application_Model_UserMapper();
-        		if($mapper->isCorrectEmail($formValues['email'])) {
+        		if($mapper->isEmailInDatabase($formValues['email'])) {
 
         			//Email is correct, so make a note of this in the session and proceed to
-        			//step 2.
+        			//the next step.
+        			$session = new Zend_Session_Namespace('forgot_password_container');
         			$session->email = $formValues['email'];
-        			$session->isEmailConfirmed = true;
-        			$session->securityQuestionAttempt = 0;
-        			
+        			        			
+        			Application_Model_ForgotPasswordProcessManager::getInstance()
+        				->setStepComplete(Application_Model_ForgotPasswordProcessManager::STEP1);
+        			        				
         			$redirector = $this->_helper->getHelper('Redirector');
         			$redirector->gotoRoute(
         				array(
@@ -62,61 +107,51 @@ class App_ForgotPasswordController extends Zend_Controller_Action
      * Make use of FlashMessenger to notify the user of the reason why they are
      * redirected
      * back to confirmEmail, if applicable.
-     *
      */
     public function confirmQuestionsAction()
     {
-    	//Ensure that the user can only reach this stage if they have successfully confirmed
-    	//their email address.
-    	$session = new Zend_Session_Namespace('forgotten_password');
-    	$redirect = false;
-    	if(!isset($session->isEmailConfirmed)) {
-    		
-    		$redirect = true;
-    	}
-    	
-    	if(!$session->isEmailConfirmed) {
-    		
-    		$redirect = true;
-    	}
-    	
-    	if(!isset($session->securityQuestionAttempt)) {
-    		
-    		$redirect = true;
-    	}
-    	
-    	if($session->securityQuestionAttempt > 3) {
-    		
-    		$redirect = true;
-    	}
-    	
-    	if($redirect) {
-    		
-    		$redirector = $this->_helper->getHelper('Redirector');
-    		$redirector->gotoRoute(
-    			array(
-    				'module' => 'App',
-    				'controller' => 'ForgotPassword',
-    				'action' => 'confirm-email'
-    			),
-    			'module_full_path',
-    			true
-    		);
-    	}
-    	
+    	$session = new Zend_Session_Namespace('forgot_password_container');
     	$form = new App_Form_ConfirmQuestions();
+    	
     	$request = $this->getRequest();
     	if($request->isPost()) {
     		
     		//Check for correct answers.
     		if($form->isValid($request->getPost())) {
     			
-    			//The answers are well form, now check that they are
+    			//The answers are well formed, now check that they are
     			//correct.
-    			if(true) {
+    			$formValues = $form->getValues();
+    			$userMapper = new Application_Model_UserMapper();
+    			$user = $userMapper->getUserByEmail($session->email);
+    			
+    			$mapper = new Application_Model_CannedQuestionMapper();
+    			$authentication = $mapper->getQAAuthentication($user);
+    			
+    			$isAuthenticated = true;
+    			if($formValues['canned_answer'] != $authentication->getAnswer()) {
+
+    				$isAuthenticated = false;
+    			}
+    			
+    			if($isAuthenticated) {
     				
-    				//Redirect to notification page.
-    				$session->isQuestionsConfirmed = true;
+    				//Authenticated successfully so far. Next check the user created
+    				//question / answer.
+	    			$mapper = new Application_Model_UserCreatedQuestionMapper();
+	    			$authentication = $mapper->getQAAuthentication($user);
+	    			if($formValues['user_created_answer'] != $authentication->getAnswer()) {
+	    					
+	    				$isAuthenticated = false;
+	    			}
+    			}
+    			
+    			if($isAuthenticated) {
+    				
+					//Redirect to notification page.
+					Application_Model_ForgotPasswordProcessManager::getInstance()
+						->setStepComplete(Application_Model_ForgotPasswordProcessManager::STEP2);
+    				
     				$redirector = $this->_helper->getHelper('Redirector');
     				$redirector->gotoRoute(
     					array(
@@ -128,6 +163,9 @@ class App_ForgotPasswordController extends Zend_Controller_Action
     					true
     				);
     			}
+    			
+    			//If here then the user failed to enter the correct authentication details.
+    			$form->addErrorMessage('Incorrect answer provided.');
     		}
     		else {
     			
@@ -140,57 +178,45 @@ class App_ForgotPasswordController extends Zend_Controller_Action
     		//Blank Zend_Form to automatically display.
     	}
     	
+    	Application_Model_ForgotPasswordProcessManager::getInstance()->incrementSecurityQuestionAttempt();
+    	
         //Display one of the canned questions, and a text box for the answer
-    	//Display the user question and a text box for the answer.
-    	$session->securityQuestionAttempt++;
-    	$this->view->canned_question = 'Question 1';
-    	$this->view->user_created_question = 'Question 2';
+    	//Display the user question and a text box for the answer
+    	$userMapper = new Application_Model_UserMapper();
+    	$user = $userMapper->getUserByEmail($session->email);
+
+    	$mapper = new Application_Model_CannedQuestionMapper();
+    	$authentication = $mapper->getQAAuthentication($user);
+    	$this->view->canned_question = $authentication->getQuestion();
+    	
+    	$mapper = new Application_Model_UserCreatedQuestionMapper();
+    	$authentication = $mapper->getQAAuthentication($user);
+    	$this->view->user_created_question = $authentication->getQuestion();
+    	
     	$this->view->form = $form;
     }
 
+    /**
+     * @todo
+     * Generate a random password.
+     */
     public function confirmNotificationAction()
     {
-    	$session = new Zend_Session_Namespace('forgotten_password');
-    	$redirect = false;
-    	if(!isset($session->isQuestionsConfirmed)) {
-    		
-    		$redirect = true;
-    	}
-    	
-    	if(!$session->isQuestionsConfirmed) {
-    		
-    		$redirect = true;
-    	}
-    	
-    	if(!isset($session->email)) {
-    		
-    		$redirect = true;
-    	}
-    	
-    	if($redirect) {
-    		
-    		$redirector = $this->_helper->getHelper('Redirector');
-    		$redirector->gotoRoute(
-    			array(
-    				'module' => 'App',
-    				'controller' => 'ForgotPassword',
-    				'action' => 'confirm-email'
-    			),
-    			'module_full_path',
-    			true
-    		);
-    	}
-    	
     	//Retrieve the email address then clear the session.
+    	$session = new Zend_Session_Namespace('forgot_password_container');
     	$email = $session->email;
-    	Zend_Session::namespaceUnset('forgotten_password');
+    	
+    	Application_Model_ForgotPasswordProcessManager::getInstance()
+    		->setStepComplete(Application_Model_ForgotPasswordProcessManager::STEP3);
+    	
+		Application_Model_ForgotPasswordProcessManager::getInstance()->resetProcess();
     	
     	//Change the password to a random password.
     	$mapper = new Application_Model_UserMapper();
-    	$newPassword = 'asfss';
-    	$mapper->updatePassword($newPassword, $email);
+    	$newPassword = $mapper->updatePasswordWithRandom($email);
     	
-    	//Email password to user.    	
+    	//Email password to user.  
+    	$config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/parameters.ini');
     	$mail = new Zend_Mail();
     	$mail->setSubject('Password reset');
     	$mail->setFrom("noreply@{$config->system->url}", 'System');

@@ -122,8 +122,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$loader = Zend_Loader_Autoloader::getInstance();
 		$loader->pushAutoloader($resource);
 	
-		Zend_Controller_Front::getInstance()->registerPlugin(new App_Plugins_Navigation());
 		Zend_Controller_Front::getInstance()->registerPlugin(new App_Plugins_Auth());
+		Zend_Controller_Front::getInstance()->registerPlugin(new App_Plugins_ForgotPasswordProcessResetter());
+		Zend_Controller_Front::getInstance()->registerPlugin(new App_Plugins_Navigation());
 	}
 	
 	

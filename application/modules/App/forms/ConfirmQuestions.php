@@ -20,10 +20,10 @@ class App_Form_ConfirmQuestions extends Zend_Form
         
         $userCreatedAnswer = clone $cannedAnswer;
         $userCreatedAnswer->setName('user_created_answer');
-        $this->addElement($userCreatedAnswer);
+    	$this->addElement($userCreatedAnswer);
         
         $next = new Zend_Form_Element_Submit('next');
-        $next->setLabel('next');
+        $next->setLabel('Next');
         $next->setIgnore(true);
         $next->clearDecorators();
         $next->addDecorator(new Zend_Form_Decorator_ViewHelper());

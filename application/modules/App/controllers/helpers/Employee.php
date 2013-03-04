@@ -2,10 +2,10 @@
 
 class App_Controllers_Helpers_Employee extends Zend_Controller_Action_Helper_Abstract {
 	
-	public function fetchSummaries() {
+	public function fetchSummaries($teamId) {
 		
 		$employeeMapper = new Application_Model_EmployeeMapper();
-		return $employeeMapper->fetchSummaries();
+		return $employeeMapper->fetchSummaries($teamId);
 	}
 	
 	public function get($employeeId) {
@@ -15,10 +15,10 @@ class App_Controllers_Helpers_Employee extends Zend_Controller_Action_Helper_Abs
 		return array('id' => $employee->getId(), 'name' => $employee->getName(), 'email' => $employee->getEmail());
 	}
 	
-	public function post($data) {
+	public function post($teamId, $data) {
 		
 		$employeeMapper = new Application_Model_EmployeeMapper();
-		return $employeeMapper->insert($data);
+		return $employeeMapper->insert($teamId, $data);
 	}
 	
 	public function put($data) {

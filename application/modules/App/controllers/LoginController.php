@@ -47,7 +47,7 @@ class App_LoginController extends Zend_Controller_Action {
 					$user = new Application_Model_User($stdClass);
 					$storage = $auth->getStorage();
 					$storage->write($user);
-					
+										
 					$redirector = $this->_helper->getHelper('Redirector');
 					$redirector->gotoRoute(
 						array(

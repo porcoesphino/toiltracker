@@ -21,7 +21,7 @@ class Application_Model_UserMapper
 	 * 
 	 * @param unknown $data
 	 */
-	public function insert($data) {
+	public function insert($teamId, $data) {
 		
 		//Encryption parameters.
 		$salt = rand();
@@ -37,6 +37,7 @@ class Application_Model_UserMapper
 		
 		$table = new Application_Model_DbTable_Users();
 		$insertData = array(
+			'team_id' => $teamId,
 			'email' => $data['email'],
 			'password' => $password,
 			'salt' => $salt,
@@ -47,7 +48,41 @@ class Application_Model_UserMapper
 			'user_created_question' => $userCreatedQuestionEncrypted,
 			'user_created_answer' => $userCreatedAnswerEncrypted
 		);
-		$table->insert($insertData);
+		$primaryKey = $table->insert($insertData);
+		
+		$data['id'] = $primaryKey;
+		$data['team_id'] = $teamId;
+		$data['role'] = Application_Model_User::MASTER;
+		$user = new Application_Model_User($data);
+		return $user;
+	}
+	
+	public function getUserByEmail($email) {
+		
+		$where = $this->_table->getAdapter()->quoteInto('email = ?', $email);
+		$select = $this->_table->select()->where($where);
+		$row = $this->_table->fetchRow($select);
+		
+		if(empty($row)) {
+			throw new Zend_Exception('Email does not exist in the system');
+		}
+		
+		$user = new Application_Model_User();
+		$user->setId($row->id);
+		$user->setTeamId($row->team_id);
+		$user->setEmail($email);
+		$user->setName($row->email);
+		$user->setRole(Application_Model_User::GUEST);
+		return $user;
+	}
+	
+	public function updatePasswordWithRandom($email) {
+	
+		$charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		$randomPassword = substr(str_shuffle($charSet),0,8);
+		
+		$this->updatePassword($randomPassword, $email);
+		return $randomPassword;
 	}
 	
 	public function updatePassword($newPassword, $email) {
@@ -64,7 +99,7 @@ class Application_Model_UserMapper
 		$table->update($insertData, $where);
 	}
 	
-	public function isCorrectEmail($email) {
+	public function isEmailInDatabase($email) {
 		
 		//find email in the database. If row found, return true, else return false.
 		$where = $this->_table->getAdapter()->quoteInto('email = ?', $email);

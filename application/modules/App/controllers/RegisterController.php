@@ -21,28 +21,36 @@ class App_RegisterController extends Zend_Controller_Action
         	
         	if($form->isValid($request->getPost())) {
         		
-        		//Encrypt and store data.
+        		//Test for duplicate emails.
         		$formValues = $form->getValues();
         		$userMapper = new Application_Model_UserMapper();
-        		$userMapper->insert($formValues);
-        		
-        		//Login
-        		$formValues['role'] = Application_Model_User::MASTER;
-        		$user = new Application_Model_User($formValues);
-        		$auth = Zend_Auth::getInstance();
-        		$auth->getStorage()->write($user);
-        		
-        		//Redirect to App/Home
-        		$helper = $this->_helper->getHelper('Redirector');
-        		$helper->gotoRoute(
-        			array(
-        				'action' => 'index',
-        				'controller' => 'Employee',
-        				'module' => 'App',
-        			),
-        			'module_partial_path',
-        			true
-        		);
+        		if(!$userMapper->isEmailInDatabase($formValues['email'])) {
+        			
+        			$teamMapper = new Application_Model_TeamMapper();
+        			$team = $teamMapper->insert($formValues);
+        			$user = $userMapper->insert($team->getId(), $formValues);
+        			
+        			//Login
+        			$auth = Zend_Auth::getInstance();
+        			$auth->getStorage()->write($user);
+        			
+        			//Redirect to App/Home
+        			$helper = $this->_helper->getHelper('Redirector');
+        			$helper->gotoRoute(
+        					array(
+        							'action' => 'index',
+        							'controller' => 'Employee',
+        							'module' => 'App',
+        					),
+        					'module_partial_path',
+        					true
+        			);
+        		}
+        		else {
+        			//Attach custom error message to the form advising user that the
+        			//email already exists in the database.
+        			$form->addErrorMessage('Email already exists in the system');
+        		}
         	}
         	else {
         		

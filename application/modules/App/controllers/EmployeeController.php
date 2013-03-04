@@ -10,8 +10,9 @@ class App_EmployeeController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
-        $this->view->employees = $employeeHelper->fetchSummaries();
+    	$user = Zend_Auth::getInstance()->getStorage()->read();
+    	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
+        $this->view->employees = $employeeHelper->fetchSummaries($user->getTeamId());
     }
 
     public function postAction()
@@ -28,8 +29,9 @@ class App_EmployeeController extends Zend_Controller_Action
         	if($form->isValid($request->getPost())) {
         		
         		//Write to the database.
+        		$user = Zend_Auth::getInstance()->getStorage()->read();
         		$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
-        		$employeeHelper->post($form->getValues());
+        		$employeeHelper->post($user->getTeamId(), $form->getValues());
         		
         		$redirector = $this->_helper->getHelper('Redirector');
         		$redirector->gotoRoute(
