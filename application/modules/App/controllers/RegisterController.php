@@ -5,7 +5,20 @@ class App_RegisterController extends Zend_Controller_Action
 
     public function init()
     {
-        /* Initialize action controller here */
+        //If user is logged in then they should not access any actions in this controller.        	
+        if(Zend_Auth::getInstance()->hasIdentity()) {
+        		
+        	$redirector = $this->_helper->getHelper('Redirector');
+        	$redirector->gotoRoute(
+	        	array(
+	        		'action' => 'index',
+	        		'controller' => 'Employee',
+	        		'module' => 'App'
+	        	),
+        		'module_partial_path',
+        		true
+        	);
+        }
     }
 
     /**
@@ -14,7 +27,6 @@ class App_RegisterController extends Zend_Controller_Action
      */
     public function indexAction()
     {
-        // action body
         $form = new App_Form_Register();
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -65,9 +77,7 @@ class App_RegisterController extends Zend_Controller_Action
         $this->view->form = $form;
     }
 
-    public function confirmRegistrationAction()
-    {
-        // action body
+    public function confirmRegistrationAction() {
     }
 
 
