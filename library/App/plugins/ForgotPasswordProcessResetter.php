@@ -10,29 +10,18 @@ class App_Plugins_ForgotPasswordProcessResetter extends Zend_Controller_Plugin_A
 		
 		//The only action that is not reset is when the user accesses the forgot-password
 		//reset process.
-		if($request->getModuleName() == 'default') {
-		
-			Application_Model_ForgotPasswordProcessManager::resetProcess();
-		}
+		$requestResetProcess = true;
 		if($request->getModuleName() == 'App') {
 			
-			if(Zend_Auth::getInstance()->hasIdentity()) {
-			
-				Application_Model_ForgotPasswordProcessManager::resetProcess();
-				return;
-			}
-			
-			if($request->getControllerName() == 'Login') {
+			if($request->getControllerName() == 'ForgotPassword') {
 				
-				Application_Model_ForgotPasswordProcessManager::resetProcess();
-				return;
+				$requestResetProcess = false;
 			}
+		}
+		
+		if($requestResetProcess) {
 			
-			if($request->getControllerName() == 'Register') {
-			
-				Application_Model_ForgotPasswordProcessManager::resetProcess();
-				return;
-			}
+			Application_Model_ForgotPasswordProcessManager::resetProcess();
 		}
 	}
 }

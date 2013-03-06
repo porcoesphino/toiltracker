@@ -45,11 +45,6 @@ class Application_Model_ForgotPasswordProcessManager
 			$isAllowed = $this->_isStep3Allowed();
 		}
 		
-		if(!$isAllowed) {
-			
-			$this->resetProcess();
-		}
-		
 		return $isAllowed;
 	}
 	
@@ -61,20 +56,7 @@ class Application_Model_ForgotPasswordProcessManager
 	 */
 	protected function _isStep1Allowed() {
 		
-		if(Zend_Auth::getInstance()->hasIdentity()) {
-		
-			//If the user is logged in then they may not execute the forgot-password
-			//process.
-			return false;
-		}
-			
-		if($this->_session->isStep1Complete) {
-			
-			//Step 1 has been previously completed, the user may not return
-			//to this step unless the entire forgot-password process is reset.
-			return false;
-		}
-		
+		//Step 1 is always allowed.
 		return true;
 	}
 	
@@ -87,7 +69,6 @@ class Application_Model_ForgotPasswordProcessManager
 				return true;
 			}
 		}
-
 		return false;
 	}
 	

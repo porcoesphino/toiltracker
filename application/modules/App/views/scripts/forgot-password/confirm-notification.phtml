@@ -1,14 +1,33 @@
 <div id="view-content">
-	Your new password has now been sent. Click 
-	<a href="<?php
-		echo $this->url(
-			array(
-				'module' => 'App',
-				'controller' => 'Login',
-				'action' => 'index'
-			),
-			'module_partial_path',
-			true);
-		?>">here</a> 
-	to login.
+	<?php if(Zend_Auth::getInstance()->hasIdentity()): ?>
+		
+		Your new password has now been sent to your email address. Click 
+		<a href="<?php
+			echo $this->url(
+				array(
+					'module' => 'App',
+					'controller' => 'Employee',
+					'action' => 'index'
+				),
+				'module_partial_path',
+				true);
+			?>">here</a> 
+		to return to the employee summary.
+		
+	<?php else: ?>
+	
+		Your new password has now been sent to your email address. Click 
+		<a href="<?php
+			echo $this->url(
+				array(
+					'module' => 'App',
+					'controller' => 'Login',
+					'action' => 'index'
+				),
+				'module_partial_path',
+				true);
+			?>">here</a> 
+		to login.
+		
+	<?php endif; ?>
 </div>

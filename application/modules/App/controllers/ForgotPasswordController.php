@@ -9,25 +9,11 @@ class App_ForgotPasswordController extends Zend_Controller_Action
     	$isStepAllowed = false;
     	if($this->getRequest()->getActionName() == 'confirm-email') {
     		
-    		$stepNumber = Application_Model_ForgotPasswordProcessManager::STEP1;
-    		$isStepAllowed = Application_Model_ForgotPasswordProcessManager::getInstance()->getIsStepAllowed($stepNumber);
-    		if(!$isStepAllowed) {
-    			
-    			//Redirect to the home page.
-    			$redirector = $this->_helper->getHelper('Redirector');
-    			$redirector->gotoRoute(
-    				array(
-    					'module' => 'default',
-    					'controller' => 'Index',
-    					'action' => 'index'
-    				),
-    				'root',
-    				true
-    			);
-    		}
+    		//Always allow access to this step, regardless of whether the user is logged in, or
+    		//at what point in the forgot-password process they currently are.
+    		return;
     	}
-    	
-    	if($this->getRequest()->getActionName() == 'confirm-questions') {
+    	else if($this->getRequest()->getActionName() == 'confirm-questions') {
     		
     		$stepNumber = Application_Model_ForgotPasswordProcessManager::STEP2;
     		$isStepAllowed = Application_Model_ForgotPasswordProcessManager::getInstance()->getIsStepAllowed($stepNumber);
@@ -39,6 +25,8 @@ class App_ForgotPasswordController extends Zend_Controller_Action
     	}
     	
     	if(!$isStepAllowed) {
+    		
+    		Application_Model_ForgotPasswordProcessManager::getInstance()->resetProcess();
     		
     		//Redirect to Step1.
     		$redirector = $this->_helper->getHelper('Redirector');
@@ -60,8 +48,6 @@ class App_ForgotPasswordController extends Zend_Controller_Action
      */
     public function confirmEmailAction()
     {    	
-    	Application_Model_ForgotPasswordProcessManager::getInstance()->resetProcess();
-    	
     	$form = new App_Form_ConfirmEmail();
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -99,6 +85,8 @@ class App_ForgotPasswordController extends Zend_Controller_Action
         		}
         	}
         }
+
+        Application_Model_ForgotPasswordProcessManager::getInstance()->resetProcess();
         $this->view->form = $form;
     }
 
