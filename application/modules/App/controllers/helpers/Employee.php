@@ -2,16 +2,31 @@
 
 class App_Controllers_Helpers_Employee extends Zend_Controller_Action_Helper_Abstract {
 	
+	public function isValidEmployee($employeeId, $user) {
+		
+		$returnVal = true;
+		try {
+			
+			$employeeMapper = new Application_Model_EmployeeMapper();
+			$employeeMapper->get($employeeId, $user);
+		}
+		catch(Zend_Exception $e) {
+			
+			$returnVal = false;
+		}
+		return $returnVal;
+	}
+	
 	public function fetchSummaries($teamId) {
 		
 		$employeeMapper = new Application_Model_EmployeeMapper();
 		return $employeeMapper->fetchSummaries($teamId);
 	}
 	
-	public function get($employeeId) {
+	public function get($user, $employeeId) {
 		
 		$employeeMapper = new Application_Model_EmployeeMapper();
-		$employee = $employeeMapper->get($employeeId);
+		$employee = $employeeMapper->get($user, $employeeId);
 		return array('id' => $employee->getId(), 'name' => $employee->getName(), 'email' => $employee->getEmail());
 	}
 	

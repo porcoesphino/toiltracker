@@ -2,6 +2,13 @@
 
 class Application_Model_EmployeeMapper
 {
+	protected $_table;
+	
+	public function __construct() {
+		
+		$this->_table = new Application_Model_DbTable_Employees();
+	}
+	
 	public function fetchSummaries($teamId) {
 		
 		$employees = new Application_Model_DbTable_Employees();
@@ -41,10 +48,19 @@ class Application_Model_EmployeeMapper
 		return $employeeArray;
 	}
 	
-	public function get($employeeId) {
+	public function get($employeeId, $user) {
 		
-		$table = new Application_Model_DbTable_Employees();
-		$row = $table->find($employeeId)->current();
+		$where = $this->_table->getAdapter()->quoteInto('id = ?', $employeeId);
+		$where .= ' AND ';
+		$where .= $this->_table->getAdapter()->quoteInto('team_id = ?', $user->getTeamId());
+		
+		$select = $this->_table->select()->where($where);
+		$row = $this->_table->fetchRow($select);		
+		if($row == null) {
+			
+			throw new Zend_Exception('Invalid employee specified.');
+		}
+		
 		$employee = new Application_Model_Employee();
 		$employee->setId($row->id);
 		$employee->setName($row->name);
@@ -68,8 +84,8 @@ class Application_Model_EmployeeMapper
 	
 		$table = new Application_Model_DbTable_Employees();
 		$insertData = array(
-				'name' => $data['name'],
-				'email' => $data['email']
+			'name' => $data['name'],
+			'email' => $data['email']
 		);
 		$table->update($insertData, $where);
 	}

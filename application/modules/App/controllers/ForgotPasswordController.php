@@ -183,11 +183,7 @@ class App_ForgotPasswordController extends Zend_Controller_Action
     	
     	$this->view->form = $form;
     }
-
-    /**
-     * @todo
-     * Generate a random password.
-     */
+    
     public function confirmNotificationAction()
     {
     	//Retrieve the email address then clear the session.

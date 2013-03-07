@@ -5,7 +5,44 @@ class App_EmployeeController extends Zend_Controller_Action
 
     public function init()
     {
-        /* Initialize action controller here */
+        //If the action is a put or delete action, then it relies on the employee id
+        //of the employee being edited or deleted. Check here to ensure that the employee
+        //id exists and belongs to the team managed by the user. If not, then simply display the
+        //index page.
+        $action = $this->getRequest()->getActionName();
+        if(($action == 'put') || ($action == 'delete')) {
+        	
+        	$forceRedirect = false;
+        	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
+	        $employeeId = $this->getRequest()->getParam('id');
+	        
+	        if(empty($employeeId)) {
+	        	
+	        	$forceRedirect = true;
+	        }
+	        else {
+	        	
+	        	$user = Zend_Auth::getInstance()->getStorage()->read();
+	        	if(!$employeeHelper->isValidEmployee($employeeId, $user)) {
+	        		
+	        		$forceRedirect = true;
+	        	}
+	        }
+	        
+	        if($forceRedirect) {
+	        		        	
+	        	$redirector = $this->_helper->getHelper('Redirector');
+	        	$redirector->gotoRoute(
+	        		array(
+	        			'action' => 'index',
+	        			'controller' => 'Employee',
+	        			'module' => 'App'
+	        		),
+	        		'module_partial_path',
+	        		true
+	        	);
+	        }
+        }
     }
 
     public function indexAction()
@@ -96,7 +133,9 @@ class App_EmployeeController extends Zend_Controller_Action
         	//Display the form populated with the values for the current employee.
         	$employeeId = $this->getRequest()->getParam('id');
         	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
-        	$values = $employeeHelper->get($employeeId);
+        	
+        	$user = Zend_Auth::getInstance()->getStorage()->read();
+        	$values = $employeeHelper->get($employeeId, $user);
         	$form->populate($values);
         }
         $this->view->form = $form;
