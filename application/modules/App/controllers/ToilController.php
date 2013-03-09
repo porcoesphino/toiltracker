@@ -6,10 +6,70 @@ class App_ToilController extends Zend_Controller_Action
 	
     public function init()
     {
-        /* Initialize action controller here */
     	if(empty($this->_mapper)) {
     			
     		$this->_mapper = new Application_Model_ToilMapper();
+    	}
+    	
+    	$forceRedirect = false;
+    	$action = $this->getRequest()->getActionName();
+    	if(($action == 'index') || ($action == 'post')) {
+
+    		$employeeId = $this->getRequest()->getParam('employeeid');
+    		 
+    		if((empty($employeeId)) || ($employeeId == ':employeeid')) {
+    			
+    			//No employee specified. Reroute.
+    			$forceRedirect = true;
+    		}
+    		else {
+    	
+    			$user = Zend_Auth::getInstance()->getStorage()->read();
+    			$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
+    			if(!$employeeHelper->isValidEmployee($employeeId, $user)) {
+    				
+    				//Employee exists but is not managed by the user. Reroute.
+    				$forceRedirect = true;
+    			}
+    		}
+    	}
+    	else if(($action == 'put') || ($action == 'delete')) {
+    		
+    		$toilId = $this->getRequest()->getParam('id');
+    		$employeeId = $this->getRequest()->getParam('employeeid');
+    		
+    		if((empty($toilId)) || ($toilId == ':id')) {
+    			
+    			$forceRedirect = true;
+    		}
+    		else if((empty($employeeId)) || ($employeeId == ':employeeid')) {
+    			
+    			$forceRedirect = true;
+    		}
+    		else {
+    			
+    			//Test to ensure the toilid correctly corresponds to the employeeid.
+    			$user = Zend_Auth::getInstance()->getStorage()->read();
+    			$toilHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Toil');
+    			if(!$toilHelper->isValidToil($toilId, $employeeId, $user)) {
+    			    				
+    				$forceRedirect = true;
+    			}
+    		}
+       	}
+    		 
+    	if($forceRedirect) {
+
+    		$redirector = $this->_helper->getHelper('Redirector');
+   			$redirector->gotoRoute(
+				array(
+    				'action' => 'index',
+    				'controller' => 'Employee',
+    				'module' => 'App'
+    			),
+    			'module_partial_path',
+    			true
+    		);
     	}
     }
 
@@ -86,7 +146,10 @@ class App_ToilController extends Zend_Controller_Action
     	
     	$form = new App_Form_Toil();
     	$form->setMethod(Zend_Form::METHOD_POST);
-    	$form->setAction('/App/Toil/put/id/' . $request->getParam('id'));
+    	
+    	$action = '/App/Toil/put/id/' . $request->getParam('id');
+    	$action .= '/employeeid/' . $request->getParam('employeeid');
+    	$form->setAction($action);
     	$form->getElement('save')->setLabel('Update');
     	
     	if($request->isPost()) {
@@ -120,7 +183,7 @@ class App_ToilController extends Zend_Controller_Action
     		}
     	}
     	else {
-    		 
+
     		//Display the form populated with the values for the current toil record.    		
     		$values = $this->_mapper->getConfiguredFormContent($this->getRequest()->getParam('id'));
     		$form->populate($values);

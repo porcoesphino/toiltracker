@@ -32,9 +32,52 @@ class Application_Model_ToilMapper
 		return $toilArray;
 	}
 	
+	public function isValidToil($toilId, $employeeId, $user) {
+		
+		//First test. Test to see if the toil exists in the database.
+		$actualEmployeeId = null;
+		try {
+		
+			$actualEmployeeId = $this->getEmployeeIdFromToilId($toilId);
+		}
+		catch(Exception $e) {
+			
+			return false;
+		}
+		
+		
+		//Second test. Test to see if the employee IDs are the same.
+		if($actualEmployeeId != $employeeId) {
+			
+			return false;
+		}
+		
+		
+		//Third test. Test to see if the toil is correctly associated with 
+		//an employee managed by the user.
+		$employee = null;
+		try {
+		
+			$employeeMapper = new Application_Model_EmployeeMapper();
+			$employee = $employeeMapper->get($employeeId, $user);
+		}
+		catch(Zend_Exception $e) {
+			
+			Zend_Debug::dump('HERE7');die();
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public function getEmployeeIdFromToilId($id) {
 		
 		$rowset = $this->_table->find($id);
+		if($rowset->count() == 0) {
+			
+			throw new Zend_Exception('Toil record not found.');
+		}
+		
 		$row = $rowset->current();
 		return $row->employee_id;
 	}

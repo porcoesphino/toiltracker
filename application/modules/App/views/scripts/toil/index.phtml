@@ -12,9 +12,15 @@
 			else {
 				echo 'Used ';
 			}
+			
+			$toilPutLink = '/App/Toil/put/id/' . $currentToil->getId();
+			$toilPutLink .= '/employeeid/' . $currentToil->getEmployeeId();
+			
+			$toilDeleteLink = '/App/Toil/delete/id/' . $currentToil->getId();
+			$toilDeleteLink .= '/employeeid/' . $currentToil->getEmployeeId();
 		?>
-		<a href="/App/Toil/put/id/<?php echo $currentToil->getId(); ?>">Edit</a>
-		<a href="/App/Toil/delete/id/<?php echo $currentToil->getId(); ?>/employeeid/<?php echo $currentToil->getEmployeeId(); ?>">Delete</a>
+		<a href="<?php echo $toilPutLink; ?>">Edit</a>
+		<a href="<?php echo $toilDeleteLink; ?>">Delete</a>
 		<br>
 		
 	<?php endforeach; ?>
