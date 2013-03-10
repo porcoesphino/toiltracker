@@ -1,0 +1,29 @@
+<?php echo $this->getHelper('Doctype')->setDoctype('HTML5'); ?>
+<html>
+<head>
+	<?php echo $this->getHelper('HeadMeta')->setCharset('UTF-8'); ?>
+</head>
+<body>
+<div id="content">
+	
+	<h1>DEFAULT</h1>
+	<div id="gateway_nav">
+		<?php
+			$navContainer = Zend_Registry::get('default_gateway_nav');
+			echo $this->getHelper('Navigation')->menu()->render($navContainer);
+		?>
+	</div>
+	
+	<div id="main_nav">
+		<?php
+			$navContainer = Zend_Registry::get('default_main_nav');
+			echo $this->getHelper('Navigation')->menu()->render($navContainer);
+		?>
+	</div>
+	
+	<div id="main">
+		<?php echo $this->layout()->content; ?>
+	</div>
+</div>
+</body>
+</html>
