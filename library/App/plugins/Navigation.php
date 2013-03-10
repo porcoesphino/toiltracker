@@ -1,13 +1,51 @@
 <?php
 
-class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
-	
-	protected $_container;
+class App_Plugins_DefaultNavigation extends Zend_Controller_Plugin_Abstract {
+		
+	protected function _configureGatewayLinks() {
+		
+		$container = new Zend_Navigation();
+		if(Zend_Auth::getInstance()->hasIdentity()) {
+			
+			$container->addPage(new Zend_Navigation_Page_Mvc(array(
+				'label' => 'Logout',
+				'module' => 'App',
+				'controller' => 'Login',
+				'action' => 'logout',
+				'route' => 'module_full_path'
+			)));
+		}
+		else {
+			
+			$container->addPage(new Zend_Navigation_Page_Mvc(array(
+				'label' => 'Login',
+				'module' => 'App',
+				'controller' => 'Login',
+				'action' => 'index',
+				'route' => 'module_partial_path'
+			)));
+			$container->addPage(new Zend_Navigation_Page_Mvc(array(
+				'label' => 'Register',
+				'module' => 'App',
+				'controller' => 'Register',
+				'action' => 'index',
+				'route' => 'module_partial_path'
+			)));
+		}
+		Zend_Registry::set('default_gateway_nav', $container);
+	}
 	
 	public function preDispatch(Zend_Controller_Request_Abstract $request) {
 	
-		$this->_container = new Zend_Navigation();
+		if($request->getModuleName() == 'default') {
 		
+			//Configure the gateway navigation facility.
+			$this->_configureGatewayLinks();
+			$this->_configureWebisiteLinks();
+		}
+		
+		
+		/*
 		if($request->getModuleName() == 'default') {
 				
 			$this->_configureWebsiteLinks($request);
@@ -34,10 +72,53 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 				$this->_configureChangePasswordLinks($request);
 			}
 		}
-	
-		Zend_Layout::getMvcInstance()->getView()->getHelper('Navigation')->navigation($this->_container);
+		*/
 	}
 	
+	protected function _configureWebisiteLinks() {
+	
+		$pages = array();
+		$pages[] = new Zend_Navigation_Page_Mvc(array(
+			'label' => 'Home',
+			'module' => 'default',
+			'controller' => 'Index',
+			'action' => 'index',
+			'route' => 'root'
+		));
+		
+		if(Zend_Auth::getInstance()->hasIdentity()) {
+			
+			$pages[] = new Zend_Navigation_Page_Mvc(array(
+				'label' => 'App Home',
+				'module' => 'App',
+				'controller' => 'Employee',
+				'action' => 'index',
+				'route' => 'module_partial_path'
+			));
+		}
+	
+		$pages[] = new Zend_Navigation_Page_Mvc(array(
+			'label' => 'About',
+			'module' => 'default',
+			'controller' => 'Index',
+			'action' => 'about',
+			'route' => 'default'	
+		));
+	
+		$pages[] = new Zend_Navigation_Page_Mvc(array(
+			'label' => 'Contact',
+			'module' => 'default',
+			'controller' => 'Index',
+			'action' => 'contact',
+			'route' => 'default'
+		));
+	
+		$container = new Zend_Navigation();
+		$container->addPages($pages);
+		Zend_Registry::set('default_main_nav', $container);
+	}
+	
+	/*
 	protected function _configureWebsiteLinks(Zend_Controller_Request_Abstract $request) {
 		
 		//Add the standard links (home/news/about etc)
@@ -111,35 +192,7 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 		$this->_addGatewayLink('logout');
 	}
 	
-	protected function _addDefaultLinks() {
-		
-		$pages = array();
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'Home',
-			'module' => 'default',
-			'controller' => 'Index',
-			'action' => 'index',
-			'route' => 'root'
-		));
-		
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'About',
-			'module' => 'default',
-			'controller' => 'Index',
-			'action' => 'about',
-			'route' => 'default'
-		));
-		
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'Contact',
-			'module' => 'default',
-			'controller' => 'Index',
-			'action' => 'contact',
-			'route' => 'default'
-		));
-		
-		$this->_container->addPages($pages);	
-	}
+	
 	
 	protected function _addGatewayLink($linkName) {
 		
@@ -308,4 +361,5 @@ class App_Plugins_Navigation extends Zend_Controller_Plugin_Abstract {
 				break;
 		}
 	}
+	*/
 }
