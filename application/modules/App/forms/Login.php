@@ -15,6 +15,7 @@ class App_Form_Login extends Zend_Form
     	$email->setAttrib('maxlength', 45);
     	$email->addValidator(new Zend_Validate_EmailAddress(), true);
     	$email->addErrorMessage('Email address is incorrect.'); //Will apply to any validation failures.
+    	$email->class = 'input-block-level';
     	$this->addElement($email);
     	
     	
@@ -25,6 +26,7 @@ class App_Form_Login extends Zend_Form
     	$password->setAttrib('maxlength', 15);
     	$password->addValidator(new Zend_Validate_Alnum(), true);
     	$password->addErrorMessage('Password is incorrect.'); //Will supercede all validation messages.
+    	$password->class = 'input-block-level';
     	$this->addElement($password);
     	
     	
@@ -33,6 +35,7 @@ class App_Form_Login extends Zend_Form
     	$login->setIgnore(true);
     	$login->clearDecorators();
     	$login->addDecorator(new Zend_Form_Decorator_ViewHelper());
+    	$login->class = 'btn btn-large btn-primary';
     	$this->addElement($login);
     	
     	foreach($this->getElements() as $currentElement) {

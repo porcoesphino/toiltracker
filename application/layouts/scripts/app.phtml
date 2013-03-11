@@ -2,23 +2,33 @@
 <html>
 <head>
 	<?php echo $this->getHelper('HeadMeta')->setCharset('UTF-8'); ?>
+	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/app/css/login.css" rel="stylesheet" media="screen">
 </head>
 <body>
-<div id="content">
-	
-	<h1>APP LAYOUT</h1>
-	<div id="gateway_nav">
-		<?php
-			$navContainer = Zend_Registry::get('app_gateway_nav');
-			echo $this->getHelper('Navigation')->menu()->render($navContainer);
-		?>
+<div class="container">
+	<div class="navbar navbar-inverse navbar-static-top">
+	    <div class="navbar-inner">
+		    <a class="brand" href="#">ToilTracker</a>
+	    	<?php
+				$options['ulClass'] = 'nav pull-right';
+				$navContainer = Zend_Registry::get('app_gateway_nav');
+				echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+			?>
+	    </div>
 	</div>
 	
-	<div id="main_nav">
-		<?php
-			$navContainer = Zend_Registry::get('app_main_nav');
-			echo $this->getHelper('Navigation')->menu()->render($navContainer);
-		?>
+	<div class="navbar navbar-static-top">
+	    <div class="navbar-inner">
+	        <?php
+				if(Zend_Registry::isRegistered('app_main_nav')) {
+	
+					$options['ulClass'] = 'nav';
+					$navContainer = Zend_Registry::get('app_main_nav');
+					echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+				}
+			?>
+	    </div>
 	</div>
 	
 	<div id="sub_nav">
@@ -35,5 +45,8 @@
 		<?php echo $this->layout()->content; ?>
 	</div>
 </div>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

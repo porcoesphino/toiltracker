@@ -14,24 +14,6 @@ class App_Plugins_AppNavigation extends Zend_Controller_Plugin_Abstract {
 		$this->_configureSubLinks($request);
 	}
 	
-	protected function _configureSubLinks($request) {
-		
-		$employeeId = $request->getParam('employeeid');
-		$toilId = $request->getParam('id');
-		
-		if($request->getActionName() == 'index') {
-			
-			if($request->getControllerName() == 'Employee') {
-			
-				$this->_configureEmployeeSubLinks();
-			}
-			else if($request->getControllerName() == 'Toil') {
-			
-				$this->_configureToilSubLinks($employeeId, $toilId);
-			}
-		}
-	}
-	
 	protected function _configureGatewayLinks() {
 		
 		$container = new Zend_Navigation();
@@ -68,21 +50,24 @@ class App_Plugins_AppNavigation extends Zend_Controller_Plugin_Abstract {
 	protected function _configureMainLinks() {
 	
 		$pages = array();
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'Employee summary',
-			'module' => 'App',
-			'controller' => 'Employee',
-			'action' => 'index',
-			'route' => 'module_partial_path'
-		));
+		if(Zend_Auth::getInstance()->hasIdentity()) {
 		
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'Settings',
-			'module' => 'App',
-			'controller' => 'ChangePassword',
-			'action' => 'change-password',
-			'route' => 'module_full_path'
-		));
+			$pages[] = new Zend_Navigation_Page_Mvc(array(
+				'label' => 'Employee summary',
+				'module' => 'App',
+				'controller' => 'Employee',
+				'action' => 'index',
+				'route' => 'module_partial_path'
+			));
+			
+			$pages[] = new Zend_Navigation_Page_Mvc(array(
+				'label' => 'Settings',
+				'module' => 'App',
+				'controller' => 'ChangePassword',
+				'action' => 'change-password',
+				'route' => 'module_full_path'
+			));
+		}
 		
 		$pages[] = new Zend_Navigation_Page_Mvc(array(
 			'label' => 'Website',
@@ -95,6 +80,29 @@ class App_Plugins_AppNavigation extends Zend_Controller_Plugin_Abstract {
 		$container = new Zend_Navigation();
 		$container->addPages($pages);
 		Zend_Registry::set('app_main_nav', $container);
+	}
+	
+	protected function _configureSubLinks($request) {
+	
+		if(!Zend_Auth::getInstance()->hasIdentity()) {
+	
+			return;
+		}
+	
+		$employeeId = $request->getParam('employeeid');
+		$toilId = $request->getParam('id');
+	
+		if($request->getActionName() == 'index') {
+				
+			if($request->getControllerName() == 'Employee') {
+					
+				$this->_configureEmployeeSubLinks();
+			}
+			else if($request->getControllerName() == 'Toil') {
+					
+				$this->_configureToilSubLinks($employeeId, $toilId);
+			}
+		}
 	}
 	
 	protected function _configureEmployeeSubLinks() {
