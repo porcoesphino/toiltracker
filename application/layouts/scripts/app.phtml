@@ -1,52 +1,70 @@
 <?php echo $this->getHelper('Doctype')->setDoctype('HTML5'); ?>
 <html>
-<head>
-	<?php echo $this->getHelper('HeadMeta')->setCharset('UTF-8'); ?>
-	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/app/css/login.css" rel="stylesheet" media="screen">
-</head>
-<body>
-<div class="container">
-	<div class="navbar navbar-inverse navbar-static-top">
-	    <div class="navbar-inner">
-		    <a class="brand" href="#">ToilTracker</a>
-	    	<?php
-				$options['ulClass'] = 'nav pull-right';
-				$navContainer = Zend_Registry::get('app_gateway_nav');
-				echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
-			?>
-	    </div>
-	</div>
-	
-	<div class="navbar navbar-static-top">
-	    <div class="navbar-inner">
-	        <?php
-				if(Zend_Registry::isRegistered('app_main_nav')) {
-	
-					$options['ulClass'] = 'nav';
-					$navContainer = Zend_Registry::get('app_main_nav');
-					echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
-				}
-			?>
-	    </div>
-	</div>
-	
-	<div id="sub_nav">
-		<?php
-			if(Zend_Registry::isRegistered('app_sub_nav')) {
-			
-				$navContainer = Zend_Registry::get('app_sub_nav');
-				echo $this->getHelper('Navigation')->menu()->render($navContainer);
-			}
-		?>
-	</div>
-	
-	<div id="main">
-		<?php echo $this->layout()->content; ?>
-	</div>
-</div>
+    <head>
+    	<?php echo $this->getHelper('HeadMeta')->setCharset('UTF-8'); ?>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ToilTracker</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/swiss/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/swiss/css/style.css">
+        <link rel="stylesheet" href="/app/css/login.css">
+		<link rel="stylesheet" href="/swiss/css/font-awesome.css">
+        <!--[if lt IE 9]>
+            <script src="/swiss/js/html5-3.6-respond-1.1.0.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <i class="icon icon-reorder"></i> Menu
+                    </a>
+                    <a class="brand" href="index.html">ToilTracker</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <?php
+								if(Zend_Registry::isRegistered('app_main_nav')) {
+					
+									$options['ulClass'] = 'nav';
+									$navContainer = Zend_Registry::get('app_main_nav');
+									echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+								}
+							?>
+						</ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+    		<div class="sub-navbar">
+				<div class="container">
+					<?php
+						$navContainer = Zend_Registry::get('app_gateway_nav');
+						echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+					?>
+				</div>
+			</div>
+        </div>
 
-<script src="http://code.jquery.com/jquery.js"></script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
-</body>
+        <div class="container wrapper">
+            <div class="row">
+                <br><br>
+                <div class="span4 offset4 well">
+                    <?php echo $this->layout()->content; ?>
+                    <a href="#">Forgot password?</a>
+                </div><!--/span-->
+            </div>
+
+            <hr>
+
+            <footer>
+                <p>&copy; ToilTracker 2012</p>
+            </footer>
+            
+        </div> <!-- /container -->
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/swiss/js/jquery-1.8.0.min.js"><\/script>')</script>
+        <script src="/swiss/js/bootstrap.min.js"></script>
+    </body>
 </html>

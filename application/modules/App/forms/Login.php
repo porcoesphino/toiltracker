@@ -35,7 +35,7 @@ class App_Form_Login extends Zend_Form
     	$login->setIgnore(true);
     	$login->clearDecorators();
     	$login->addDecorator(new Zend_Form_Decorator_ViewHelper());
-    	$login->class = 'btn btn-large btn-primary';
+    	$login->class = 'btn btn-success';
     	$this->addElement($login);
     	
     	foreach($this->getElements() as $currentElement) {
