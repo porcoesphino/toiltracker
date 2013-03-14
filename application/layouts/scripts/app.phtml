@@ -1,18 +1,32 @@
 <?php echo $this->getHelper('Doctype')->setDoctype('HTML5'); ?>
 <html>
     <head>
-    	<?php echo $this->getHelper('HeadMeta')->setCharset('UTF-8'); ?>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>ToilTracker</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/swiss/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/swiss/css/style.css">
-        <link rel="stylesheet" href="/app/css/login.css">
-		<link rel="stylesheet" href="/swiss/css/font-awesome.css">
-        <!--[if lt IE 9]>
-            <script src="/swiss/js/html5-3.6-respond-1.1.0.min.js"></script>
-        <![endif]-->
+    	<?php
+    		echo $this->getHelper('HeadTitle')->headTitle('ToilTracker');
+    	
+    		$this->getHelper('HeadMeta')->setCharset('UTF-8');
+    		$this->getHelper('HeadMeta')->setHttpEquiv('X-UA-Compatible', 'IE=edge,chrome=1');
+    		$this->getHelper('HeadMeta')->appendName('keywords', '');
+    		$this->getHelper('HeadMeta')->appendName('description', '');
+    		$this->getHelper('HeadMeta')->appendName('viewport', 'width=device-width, initial-scale=1.0');
+    		echo $this->getHelper('HeadMeta');
+    		
+    		$this->getHelper('HeadLink')->appendStylesheet('/swiss/css/bootstrap.min.css');
+    		$this->getHelper('HeadLink')->appendStylesheet('/swiss/css/style.css');
+    		$this->getHelper('HeadLink')->appendStylesheet('/app/css/login.css');
+    		$this->getHelper('HeadLink')->appendStylesheet('/swiss/css/font-awesome.css');
+    		echo $this->getHelper('HeadLink');
+    		
+    		$this->getHelper('HeadScript')->appendFile(
+				'/swiss/js/html5-3.6-respond-1.1.0.min.js', 
+				'text/javascript',
+				array(
+					'conditional' => 'lt IE 9'
+				)
+    		);
+    		echo $this->getHelper('HeadScript');
+    	?>
+
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -33,7 +47,7 @@
 								}
 							?>
 						</ul>
-                    </div><!--/.nav-collapse -->
+                    </div>
                 </div>
             </div>
     		<div class="sub-navbar">
@@ -51,8 +65,15 @@
                 <br><br>
                 <div class="span4 offset4 well">
                     <?php echo $this->layout()->content; ?>
-                    <a href="#">Forgot password?</a>
-                </div><!--/span-->
+                    <a href="<?php echo $this->getHelper('Url')->url(array(
+                    	'module' => 'App',
+                    	'controller' => 'ForgotPassword',
+                    	'action' => 'confirm-email'	
+                    ),
+                    'module_full_path',
+                    true); 
+                    ?>">Forgot password?</a>
+                </div>
             </div>
 
             <hr>
@@ -61,10 +82,19 @@
                 <p>&copy; ToilTracker 2012</p>
             </footer>
             
-        </div> <!-- /container -->
+        </div>
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/swiss/js/jquery-1.8.0.min.js"><\/script>')</script>
-        <script src="/swiss/js/bootstrap.min.js"></script>
+        <?php 
+        	$this->getHelper('HeadScript')->appendFile(
+				'http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js', 
+				'text/javascript');
+			$this->getHelper('HeadScript')->appendScript(
+				'window.jQuery || document.write(\'<script src="/swiss/js/jquery-1.8.0.min.js"></script>\'',
+				'text/javascript');
+			$this->getHelper('HeadScript')->appendFile(
+				'/swiss/js/bootstrap.min.js',
+				'text/javascript');
+			echo $this->getHelper('HeadScript');
+        ?>
     </body>
 </html>

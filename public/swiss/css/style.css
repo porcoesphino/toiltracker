@@ -16,7 +16,7 @@ body {
     color: #2F353E;
     font-family: 'Open Sans', Helvetica, Arial, sans-serif;
     font-weight: 400;
-    background: #EEE url('../assets/bg-body-2.png') center top repeat-x;
+    background: #EEE url('/swiss/assets/bg-body-2.png') center top repeat-x;
 }
 .wrapper {
     padding: 25px 20px 20px;
@@ -39,7 +39,7 @@ p {
     color: #FFF;
     font-weight: bold;
     border-left: #000;
-    background: #111 url('../assets/table-head.png');
+    background: #111 url('/swiss/assets/table-head.png');
 }
 .table th, .table td {
     vertical-align: middle;
@@ -196,7 +196,7 @@ p {
     -webkit-border-top-right-radius: 5px;
        -moz-border-top-right-radius: 5px;
             border-top-right-radius: 5px;
-    background: #222 url('../assets/table-head.png') top center;
+    background: #222 url('/swiss/assets/table-head.png') top center;
 }
 .widget h4 {
     margin: 0;
@@ -269,7 +269,7 @@ p {
   -webkit-box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
      -moz-box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
           box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
-  background: #222 url('../assets/banner-01.jpg') center bottom;
+  background: #222 url('/swiss/assets/banner-01.jpg') center bottom;
   background-size: cover;
 }
 .banner p, .banner h2 {
