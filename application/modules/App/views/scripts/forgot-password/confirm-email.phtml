@@ -1,35 +1,52 @@
-<?php
-	$errorMessages = $this->form->getErrorMessages();
-	if($errorMessages != null) {
-		$isFirst = true;
-		foreach($errorMessages as $currentMessage) {
-			if($isFirst) {
-				$isFirst = false;
-				echo $currentMessage;
-			}
-			else {
-				echo '<br>' . $errorMessage;
+<div class="span12 content">
+	<div class="banner">
+    	<h2>Password Recovery</h2>
+    	<p>Step 2 of 3</p>
+    </div>
+
+	<?php
+		$errorMessages = $this->form->getErrorMessages();
+		if($errorMessages != null) {
+			$isFirst = true;
+			foreach($errorMessages as $currentMessage) {
+				if($isFirst) {
+					$isFirst = false;
+					echo $currentMessage;
+				}
+				else {
+					echo '<br>' . $errorMessage;
+				}
 			}
 		}
-	}
-?>
-<div id="view-content">
-<form id="<?php echo $this->form->getName(); ?>"
-	name="<?php echo $this->form->getName(); ?>"
-	method="<?php echo $this->form->getMethod(); ?>"
-	action="<?php echo $this->form->getAction(); ?>">
+	?>	
 
-	<fieldset>
-		<label for="<?php echo $this->form->email->getName(); ?>">Email:</label>
-		<?php echo $this->form->email; ?>
-	</fieldset>
+	<form id="<?php echo $this->form->getName(); ?>"
+		name="<?php echo $this->form->getName(); ?>"
+		method="<?php echo $this->form->getMethod(); ?>"
+		action="<?php echo $this->form->getAction(); ?>"
+		class="form-horizontal">
 	
-	<fieldset>
-		<?php echo $this->form->captcha; ?>
-	</fieldset>
+		<p>Please enter the email address you use to log into the system:</p>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->email->getName(); ?>">Email:</label>
+			<div class="controls">
+				<?php echo $this->form->email; ?>
+			</div>
+		</div>
+		
+		<hr>
+		<p>Please type the charaters below into the text box:</p>
+		<div class="control-group">
+			<div class="controls">
+				<?php echo $this->form->captcha; ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<div class="controls">
+				<?php echo $this->form->next; ?>
+			</div>
+		</div>
+	</form>
 	
-	<fieldset>
-		<?php echo $this->form->next; ?>
-	</fieldset>
-</form>
 </div>

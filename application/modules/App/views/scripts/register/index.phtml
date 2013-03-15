@@ -1,67 +1,145 @@
-<div id="view-content">
-<?php
-	$errorMessages = $this->form->getErrorMessages();
-	if($errorMessages != null) {
-		$isFirst = true;
-		foreach($errorMessages as $currentMessage) {
-			if($isFirst) {
-				$isFirst = false;
-				echo $currentMessage;
-			}
-			else {
-				echo '<br>' . $errorMessage;
+<div class="span12 content">
+	<div class="banner">
+    	<h2>One Step Registration</h2>
+    </div>
+
+	<?php
+		$errorMessages = $this->form->getErrorMessages();
+		if($errorMessages != null) {
+			$isFirst = true;
+			foreach($errorMessages as $currentMessage) {
+				if($isFirst) {
+					$isFirst = false;
+					echo $currentMessage;
+				}
+				else {
+					echo '<br>' . $errorMessage;
+				}
 			}
 		}
-	}
-?>
-<form id="<?php echo $this->form->getName(); ?>"
-	name="<?php echo $this->form->getName(); ?>"
-	method="<?php echo $this->form->getMethod(); ?>"
-	action="<?php echo $this->form->getAction(); ?>">
+	?>
 	
-	<fieldset>
-		<label for="<?php echo $this->form->name->getName(); ?>">Name:</label>
-		<?php echo $this->form->name; ?>
-	</fieldset>
-	
-	<fieldset>
-		<label for="<?php echo $this->form->email->getName(); ?>">Email:</label>
-		<?php echo $this->form->email; ?>
-
-		<label for="<?php echo $this->form->confirm_email->getName(); ?>">Confirm email:</label>
-		<?php echo $this->form->confirm_email; ?>
-	</fieldset>
-	
-	<fieldset>
-		<label for="<?php echo $this->form->password->getName(); ?>">Password:</label>
-		<?php echo $this->form->password; ?>
-
-		<label for="<?php echo $this->form->confirm_password->getName(); ?>">Confirm password:</label>
-		<?php echo $this->form->confirm_password; ?>
-	</fieldset>
-	
-	<fieldset>
-		<label for="<?php echo $this->form->canned_questions->getName(); ?>">Security question 1:</label>
-		<?php echo $this->form->canned_questions; ?>
+	<form id="<?php echo $this->form->getName(); ?>"
+		name="<?php echo $this->form->getName(); ?>"
+		method="<?php echo $this->form->getMethod(); ?>"
+		action="<?php echo $this->form->getAction(); ?>"
+		class="form-horizontal">
 		
-		<label for="<?php echo $this->form->canned_answer->getName(); ?>">Security answer 1:</label>
-		<?php echo $this->form->canned_answer; ?>
-	</fieldset>
-	
-	<fieldset>
-		<label for="<?php echo $this->form->user_created_question->getName(); ?>">Security question 2:</label>
-		<?php echo $this->form->user_created_question; ?>
+		<p>Your personal information:</p>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->name->getName(); ?>">Name:</label>
+			<div class="controls">
+				<?php echo $this->form->name; ?>
+			</div>
+		</div>
 		
-		<label for="<?php echo $this->form->user_created_answer->getName(); ?>">Security answer 2:</label>
-		<?php echo $this->form->user_created_answer; ?>
-	</fieldset>
-	
-	<fieldset>
-		<?php echo $this->form->captcha; ?>
-	</fieldset>
-	
-	<fieldset>
-		<?php echo $this->form->register; ?>
-	</fieldset>
-</form>
+		<hr>
+        <p>Please provide your email address. This will be used to login:</p>
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->email->getName(); ?>">Email:</label>
+			<div class="controls">
+				<?php echo $this->form->email; ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->confirm_email->getName(); ?>">Confirm email:</label>
+			<div class="controls">
+				<?php echo $this->form->confirm_email; ?>
+			</div>
+		</div>
+		
+		<hr>
+        <p>Please enter a secure password. Should be 6 characters or more in length.</p>
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->password->getName(); ?>">Password:</label>
+			<div class="controls">
+				<?php echo $this->form->password; ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->confirm_password->getName(); ?>">Confirm password:</label>
+			<div class="controls">
+				<?php echo $this->form->confirm_password; ?>
+			</div>
+		</div>
+		
+		<hr>
+        <p>
+        Please select a question from the drop and provide an answer. This will be used to reset
+        your password if you forget it.
+        </p>
+		
+		<!-- 
+		<div class="control-group">
+			<label class="control-label" for="cant_be_bothered">Cant be bothered:</label>
+			<div class="controls">
+				<input id="cant_be_bothered" name="cant_be_bothered" type="checkbox">
+			</div>
+		</div>
+		-->
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->canned_questions->getName(); ?>">Security question 1:</label>
+			<div class="controls">
+				<?php echo $this->form->canned_questions; ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->canned_answer->getName(); ?>">Security answer 1:</label>
+			<div class="controls">
+				<?php echo $this->form->canned_answer; ?>
+			</div>
+		</div>
+		
+		<hr>
+        <p>
+        Please enter your own question and answer. This will be presented to you if you forget your password, so
+        that the software can verify who you are. Question / answers are encrypted on the system, so feel free to
+        make this question anything you want.
+        </p>
+		
+		<!-- 
+		<div class="control-group">
+			<label class="control-label" for="dont_wanna">Dont wanna:</label>
+			<div class="controls">
+				<input id="dont_wanna" name="dont_wanna" type="checkbox">
+			</div>
+		</div>
+		-->
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->user_created_question->getName(); ?>">Security question 2:</label>
+			<div class="controls">
+				<?php echo $this->form->user_created_question; ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->user_created_answer->getName(); ?>">Security answer 2:</label>
+			<div class="controls">
+				<?php echo $this->form->user_created_answer; ?>
+			</div>
+		</div>
+		
+		<hr>
+		<p>
+			Finally, please prove that you are human - just type the letters you see in the image below:
+		</p>
+		<div class="control-group">
+			<div class="controls">
+				<?php echo $this->form->captcha; ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<div class="controls">
+				<?php echo $this->form->register; ?>
+			</div>
+		</div>
+	</form>
 </div>

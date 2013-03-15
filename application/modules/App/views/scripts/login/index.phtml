@@ -1,36 +1,48 @@
-<div id="view-content">
-<?php
-	$errorMessages = $this->form->getErrorMessages();
-	if($errorMessages != null) {
-		$isFirst = true;
-		foreach($errorMessages as $currentMessage) {
-			if($isFirst) {
-				$isFirst = false;
-				echo $currentMessage;
-			}
-			else {
-				echo '<br>' . $errorMessage;
+<br><br>
+<div class="span4 offset4 well">
+
+	<?php
+		$errorMessages = $this->form->getErrorMessages();
+		if($errorMessages != null) {
+			$isFirst = true;
+			foreach($errorMessages as $currentMessage) {
+				if($isFirst) {
+					$isFirst = false;
+					echo $currentMessage;
+				}
+				else {
+					echo '<br>' . $errorMessage;
+				}
 			}
 		}
-	}
-?>
-<form id="<?php echo $this->form->getName(); ?>"
-	name="<?php echo $this->form->getName(); ?>"
-	method="<?php echo $this->form->getMethod(); ?>"
-	action="<?php echo $this->form->getAction(); ?>">
-	
-	<fieldset>
-		<label for="<?php echo $this->form->email->getName(); ?>">Email:</label>
-		<?php echo $this->form->email; ?>
-	</fieldset>
-	
-	<fieldset>
-		<label for="<?php echo $this->form->password->getName(); ?>">Password:</label>
-		<?php echo $this->form->password; ?>
-	</fieldset>
-	
-	<fieldset>
-		<?php echo $this->form->login; ?>
-	</fieldset>
-</form>
+	?>
+	<form id="<?php echo $this->form->getName(); ?>"
+		name="<?php echo $this->form->getName(); ?>"
+		method="<?php echo $this->form->getMethod(); ?>"
+		action="<?php echo $this->form->getAction(); ?>">
+		
+		<fieldset>
+			<label for="<?php echo $this->form->email->getName(); ?>">Email:</label>
+			<?php echo $this->form->email; ?>
+		</fieldset>
+		
+		<fieldset>
+			<label for="<?php echo $this->form->password->getName(); ?>">Password:</label>
+			<?php echo $this->form->password; ?>
+		</fieldset>
+		
+		<fieldset>
+			<?php echo $this->form->login; ?>
+		</fieldset>
+	</form>
+
+	<a href="<?php echo $this->getHelper('Url')->url(array(
+	    	'module' => 'App',
+	        'controller' => 'ForgotPassword',
+	        'action' => 'confirm-email'	
+    	),
+        'module_full_path',
+        true); 
+	?>">Forgot password?</a>
+		
 </div>

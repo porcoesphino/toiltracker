@@ -120,9 +120,11 @@ class App_Form_Register extends Zend_Form
         $this->addElement($captcha);
         
         $register = new Zend_Form_Element_Submit('register');
+        $register->setLabel('Register');
         $register->setIgnore(true);
         $register->clearDecorators();
         $register->addDecorator(new Zend_Form_Decorator_ViewHelper());
+        $register->class = 'btn btn-success';
         $this->addElement($register);
         
         foreach($this->getElements() as $currentElement) {

@@ -1,36 +1,51 @@
-<div id="view-content">
-<?php
-	$errorMessages = $this->form->getErrorMessages();
-	if($errorMessages != null) {
-		$isFirst = true;
-		foreach($errorMessages as $currentMessage) {
-			if($isFirst) {
-				$isFirst = false;
-				echo $currentMessage;
-			}
-			else {
-				echo '<br>' . $errorMessage;
+<div class="span12 content">
+	<div class="banner">
+    	<h2>Password Recovery</h2>
+    	<p>Step 2 of 3</p>
+    </div>
+    
+	<?php
+		$errorMessages = $this->form->getErrorMessages();
+		if($errorMessages != null) {
+			$isFirst = true;
+			foreach($errorMessages as $currentMessage) {
+				if($isFirst) {
+					$isFirst = false;
+					echo $currentMessage;
+				}
+				else {
+					echo '<br>' . $errorMessage;
+				}
 			}
 		}
-	}
-?>
-<form id="<?php echo $this->form->getName(); ?>"
-	name="<?php echo $this->form->getName(); ?>"
-	method="<?php echo $this->form->getMethod(); ?>"
-	action="<?php echo $this->form->getAction(); ?>">
-
-	<fieldset>
-		<h4><?php echo $this->canned_question; ?></h4>
-		<?php echo $this->form->canned_answer; ?>
-	</fieldset>
+	?>
 	
-	<fieldset>
-		<h4><?php echo $this->user_created_question; ?></h4>
-		<?php echo $this->form->user_created_answer; ?>
-	</fieldset>
-	
-	<fieldset>
-		<?php echo $this->form->next; ?>
-	</fieldset>
-</form>
+	<form id="<?php echo $this->form->getName(); ?>"
+		name="<?php echo $this->form->getName(); ?>"
+		method="<?php echo $this->form->getMethod(); ?>"
+		action="<?php echo $this->form->getAction(); ?>"
+		class="form-horizontal">
+		
+		<p>Question: <?php echo $this->canned_question; ?></p>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->canned_answer->getName(); ?>">Your answer:</label>
+			<div class="controls">
+				<?php echo $this->form->canned_answer; ?>
+			</div>
+		</div>
+		
+		<p>Question: <?php echo $this->user_created_question; ?></p>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->user_created_answer->getName(); ?>">Your answer:</label>
+			<div class="controls">
+				<?php echo $this->form->user_created_answer; ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<div class="controls">
+				<?php echo $this->form->next; ?>
+			</div>
+		</div>
+	</form>
 </div>

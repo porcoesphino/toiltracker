@@ -61,22 +61,10 @@
         </div>
 
         <div class="container wrapper">
-            <div class="row">
-                <br><br>
-                <div class="span4 offset4 well">
-                    <?php echo $this->layout()->content; ?>
-                    <a href="<?php echo $this->getHelper('Url')->url(array(
-                    	'module' => 'App',
-                    	'controller' => 'ForgotPassword',
-                    	'action' => 'confirm-email'	
-                    ),
-                    'module_full_path',
-                    true); 
-                    ?>">Forgot password?</a>
-                </div>
-            </div>
-
-            <hr>
+        	<div class="row">
+				<?php echo $this->layout()->content; ?>
+				<hr>
+			</div>
 
             <footer>
                 <p>&copy; ToilTracker 2012</p>

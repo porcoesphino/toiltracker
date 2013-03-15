@@ -44,6 +44,7 @@ class App_Form_ConfirmEmail extends Zend_Form
     	$next->setIgnore(true);
     	$next->clearDecorators();
     	$next->addDecorator(new Zend_Form_Decorator_ViewHelper());
+    	$next->class = 'btn btn-success';
     	$this->addElement($next);
     	 
     	foreach($this->getElements() as $currentElement) {
