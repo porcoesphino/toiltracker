@@ -1,27 +1,55 @@
-<div id="view-content">
-	<h2>Toil summary</h2>
-	<?php foreach($this->toilList as $currentToil): ?>	
-		
-		<?php
-			echo $currentToil->getDate() . ' ';
-			echo $currentToil->getDuration() . ' ';
-			
-			if($currentToil->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
-				echo 'Accrued ';
-			}
-			else {
-				echo 'Used ';
-			}
-			
-			$toilPutLink = '/App/Toil/put/id/' . $currentToil->getId();
-			$toilPutLink .= '/employeeid/' . $currentToil->getEmployeeId();
-			
-			$toilDeleteLink = '/App/Toil/delete/id/' . $currentToil->getId();
-			$toilDeleteLink .= '/employeeid/' . $currentToil->getEmployeeId();
-		?>
-		<a href="<?php echo $toilPutLink; ?>">Edit</a>
-		<a href="<?php echo $toilDeleteLink; ?>">Delete</a>
-		<br>
-		
-	<?php endforeach; ?>
+<div class="span3">
+	<?php
+		$options['ulClass'] = 'nav nav-tabs nav-stacked';
+		$navContainer = Zend_Registry::get('app_sub_nav');
+		echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+	?>
+</div>
+
+<div class="span9 content">
+	<h3>Toil summary</h3>
+	<table class="table table-bordered table-striped">
+    	<thead>
+        	<tr>
+            	<th>Date</th>
+                <th>Duration</th>
+                <th>Type</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        	<?php foreach($this->toilList as $currentToil): ?>	
+        	<tr>
+            	<td><?php echo $currentToil->getDate() ?></td>
+            	<td><?php echo $currentToil->getDuration() ?></td>
+            	<td>
+            		<?php 
+            		if($currentToil->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
+						echo 'Accrued ';
+					}
+					else {
+						echo 'Used ';
+					}
+					?>
+            	</td>
+            	
+            	<td>
+            		<a href="<?php 
+            			$toilPutLink = '/App/Toil/put/id/' . $currentToil->getId();
+            			$toilPutLink .= '/employeeid/' . $currentToil->getEmployeeId();
+            			echo $toilPutLink; 
+            			?>">Edit</a>
+            	</td>
+            	<td>
+            		<a href="<?php 
+            			$toilDeleteLink = '/App/Toil/delete/id/' . $currentToil->getId();
+            			$toilDeleteLink .= '/employeeid/' . $currentToil->getEmployeeId();
+            			echo $toilDeleteLink; 
+            			?>">Delete</a>
+            	</td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </div>

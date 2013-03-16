@@ -1,33 +1,51 @@
-<div id="view-content">
+<div class="span3">
+	<?php
+		//$options['ulClass'] = 'nav nav-tabs nav-stacked';
+		//$navContainer = Zend_Registry::get('app_sub_nav');
+		//echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+	?>
+</div>
+
+<div class="span9 content">
+	<h3>Edit employee</h3>
+	
 	<form id="<?php echo $this->form->getName(); ?>"
 		name="<?php echo $this->form->getName(); ?>"
 		action="<?php echo $this->form->getAction(); ?>"
-		method="<?php echo $this->form->getMethod(); ?>">
+		method="<?php echo $this->form->getMethod(); ?>"
+		class="form-horizontal">
 		
 		<?php echo $this->form->getElement('id'); ?>
-		<fieldset>
-			<label for="<?php echo $this->form->getElement('name')->getName(); ?>">Name:*</label>
-			<?php echo $this->form->getElement('name'); ?>
-		</fieldset>
 		
-		<fieldset>
-			<label for="<?php echo $this->form->getElement('email')->getName(); ?>">Email:</label>
-			<?php echo $this->form->getElement('email'); ?>
-		</fieldset>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->getElement('name')->getName(); ?>">Name:*</label>
+			<div class="controls">
+				<?php echo $this->form->getElement('name'); ?>
+			</div>
+		</div>
 		
-		<fieldset>
-			<?php echo $this->form->getElement('save'); ?>
-			<?php 
-				$url = $this->getHelper('Url')->url(
-					array(
-						'module' => 'App', 
-						'controller' => 'Employee', 
-						'action' => 'index'
-					),
-					'module_partial_path',
-					true);
-				echo $this->getHelper('Anchor')->anchor($url, 'Cancel');
-			?>
-		</fieldset>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->getElement('email')->getName(); ?>">Email:</label>
+			<div class="controls">
+				<?php echo $this->form->getElement('email'); ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<div class="controls">
+				<?php 
+					echo $this->form->getElement('save');
+					$url = $this->getHelper('Url')->url(
+						array(
+							'module' => 'App', 
+							'controller' => 'Employee', 
+							'action' => 'index'
+						),
+						'module_partial_path',
+						true);
+					echo $this->getHelper('Anchor')->anchor($url, 'Cancel');
+				?>
+			</div>
+		</div>
 	</form>
 </div>

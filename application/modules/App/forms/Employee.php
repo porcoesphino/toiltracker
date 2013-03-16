@@ -39,6 +39,7 @@ class App_Form_Employee extends Zend_Form
     	$add->setIgnore(true);
     	$add->clearDecorators();
     	$add->addDecorator('ViewHelper');
+    	$add->class = 'btn btn-success';
     	$this->addElement($add);
     	
     	foreach($this->getElements() as $currentElement) {

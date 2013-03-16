@@ -1,8 +1,19 @@
-<div id="view-content">
+<div class="span3">
+	<?php
+		//$options['ulClass'] = 'nav nav-tabs nav-stacked';
+		//$navContainer = Zend_Registry::get('app_sub_nav');
+		//echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+	?>
+</div>
+
+<div class="span9 content">
+	<h3>Add /edit TOIL</h3>
+
 	<form id="<?php echo $this->form->getName(); ?>"
 		name="<?php echo $this->form->getName(); ?>"
 		action="<?php echo $this->form->getAction(); ?>"
-		method="<?php echo $this->form->getMethod(); ?>">
+		method="<?php echo $this->form->getMethod(); ?>"
+		class="form-horizontal">
 				
 		<?php echo $this->form->getElement('id'); ?>
 		<?php
@@ -13,40 +24,55 @@
 			echo $employeeIdElement; 
 		?>
 		
-		<fieldset>
-			<label for="<?php echo $this->form->getElement('days')->getName(); ?>">Date <?php echo $this->toil_action; ?>:</label>
-			<?php echo $this->form->getElement('days'); ?>
-			<?php echo $this->form->getElement('months'); ?>
-			<?php echo $this->form->getElement('years'); ?>
-		</fieldset>
+		<div class="control-group">
+			<label class="control-label" for="<?php 
+				echo $this->form->getElement('days')->getName(); ?>">Date <?php echo $this->toil_action; ?>:</label>
+			<div class="controls">
+				<?php
+					echo $this->form->getElement('days');
+					echo $this->form->getElement('months');
+					echo $this->form->getElement('years');
+				?>
+			</div>
+		</div>
 		
-		<fieldset>
-			<label for="<?php echo $this->form->getElement('hours')->getName(); ?>">Hours:</label>
-			<?php echo $this->form->getElement('hours'); ?>
-			
-			<label for="<?php echo $this->form->getElement('minutes')->getName(); ?>">Minutes:</label>
-			<?php echo $this->form->getElement('minutes'); ?>
-		</fieldset>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->getElement('hours')->getName(); ?>">Hours:</label>
+			<div class="controls">
+				<?php echo $this->form->getElement('hours'); ?>
+			</div>
+		</div>
 		
-		<fieldset>
-			<label for="<?php echo $this->form->getElement('notes')->getName(); ?>">Notes:</label>
-			<?php echo $this->form->getElement('notes'); ?>
-		</fieldset>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->getElement('minutes')->getName(); ?>">Minutes:</label>
+			<div class="controls">
+				<?php echo $this->form->getElement('minutes'); ?>
+			</div>
+		</div>
 		
-		<fieldset>
-			<?php echo $this->form->getElement('save'); ?>
-			<?php 
-				$url = $this->getHelper('Url')->url(
-					array(
-						'module' => 'App', 
-						'controller' => 'Toil', 
-						'action' => 'index',
-						'employeeid' => $this->employee_id
-					),
-					'module_full_path_employeeid',
-					true);
-				echo $this->getHelper('Anchor')->anchor($url, 'Cancel');
-			?>
-		</fieldset>
+		<div class="control-group">
+			<label class="control-label" for="<?php echo $this->form->getElement('notes')->getName(); ?>">Notes:</label>
+			<div class="controls">
+				<?php echo $this->form->getElement('notes'); ?>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<div class="controls">
+				<?php
+					echo $this->form->getElement('save');
+					$url = $this->getHelper('Url')->url(
+						array(
+							'module' => 'App', 
+							'controller' => 'Toil', 
+							'action' => 'index',
+							'employeeid' => $this->employee_id
+						),
+						'module_full_path_employeeid',
+						true);
+					echo $this->getHelper('Anchor')->anchor($url, 'Cancel');
+				?>
+			</div>
+		</div>
 	</form>
 </div>
