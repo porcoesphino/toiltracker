@@ -1,7 +1,9 @@
-<div id="view-content">
+<div class="span12 content">
+	<h3>Password Sent</h3>
+	<p>
 	<?php if(Zend_Auth::getInstance()->hasIdentity()): ?>
 		
-		Your new password has now been sent to your email address. Click 
+		Your new password has now been sent to your email address. Please click 
 		<a href="<?php
 			echo $this->url(
 				array(
@@ -16,7 +18,7 @@
 		
 	<?php else: ?>
 	
-		Your new password has now been sent to your email address. Click 
+		Your new password has now been sent to your email address. Please click 
 		<a href="<?php
 			echo $this->url(
 				array(
@@ -30,4 +32,5 @@
 		to login.
 		
 	<?php endif; ?>
+	</p>
 </div>
