@@ -6,7 +6,12 @@ class App_Plugins_LayoutManager extends Zend_Controller_Plugin_Abstract {
 			
 		if($request->getModuleName() == 'default') {
 			
-			Zend_Layout::getMvcInstance()->setLayout('default');
+			if(($request->getControllerName() == 'Index') && ($request->getActionName() == 'terms')) {
+				Zend_Layout::getMvcInstance()->setLayout('popup');
+			}
+			else {
+				Zend_Layout::getMvcInstance()->setLayout('default');
+			}
 		}
 		else {
 			

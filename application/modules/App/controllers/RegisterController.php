@@ -77,10 +77,6 @@ class App_RegisterController extends Zend_Controller_Action
         $this->view->form = $form;
     }
 
-    public function confirmRegistrationAction() {
-    }
-
-
 }
 
 

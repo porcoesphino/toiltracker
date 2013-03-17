@@ -1,7 +1,13 @@
-<div class="span12 content">
-	<div class="banner">
-    	<h2>One Step Registration</h2>
-    </div>
+<div class="span3">
+	<?php
+		//$options['ulClass'] = 'nav nav-tabs nav-stacked';
+		//$navContainer = Zend_Registry::get('app_sub_nav');
+		//echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+	?>
+</div>
+
+<div class="span9 content">
+	<h3>One Step Registration</h3>
 
 	<?php
 		$errorMessages = $this->form->getErrorMessages();
@@ -123,6 +129,40 @@
 			<label class="control-label" for="<?php echo $this->form->user_created_answer->getName(); ?>">Security answer 2:</label>
 			<div class="controls">
 				<?php echo $this->form->user_created_answer; ?>
+			</div>
+		</div>
+		
+		<hr>
+		<div class="control-group">
+			<div class="controls">
+				<label class="checkbox">
+					<?php
+						//Identify any error with the terms. Make a note of this and switch off
+						//the error. We will display the error message underneath this label.
+						$isErrored = false;
+						if($this->form->terms->hasErrors()) {
+							$isErrored = true;
+						}
+						echo $this->form->terms; 
+					?>
+					Please tick here to confirm that you will abide by the excessively verbose and largely
+					inpenetrable
+						<a target="_blank" href="<?php 
+							echo $this->getHelper('Url')->url(array(
+					    	'module' => 'default',
+					        'controller' => 'Index',
+					        'action' => 'terms'	
+				    	),
+				        'default',
+				        true); ?>">terms of use</a>. Go ahead, check them out.
+					
+					<?php 
+						//If there is an error with the terms, display it here.
+						if($isErrored) {
+							echo '<ul><li>You must agree to the terms before you can register</li></ul>';
+						}
+					?>
+				</label>
 			</div>
 		</div>
 		

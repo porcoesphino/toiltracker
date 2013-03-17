@@ -84,7 +84,6 @@ class App_Form_Register extends Zend_Form
         $validator->setMessage('Answer should be 50 characters max.', Zend_Validate_StringLength::TOO_LONG);
         $cannedAnswer->addValidator($validator, true);
         $cannedAnswer->setAttrib('maxlength', 50);
-        $cannedAnswer->addValidator(new Application_Form_Validators_RestrictedChars(), true);
         $this->addElement($cannedAnswer);
         
         
@@ -96,6 +95,13 @@ class App_Form_Register extends Zend_Form
         $userCreatedAnswer = clone $cannedAnswer;
         $userCreatedAnswer->setName('user_created_answer');
         $this->addElement($userCreatedAnswer);
+        
+        $terms = new Zend_Form_Element_Checkbox('terms');
+        $terms->setRequired(true);
+        $terms->setUncheckedValue(null);
+        $terms->removeDecorator('Errors');
+        $terms->removeDecorator('FormErrors');
+        $this->addElement($terms);
         
         
         //Captcha

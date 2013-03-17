@@ -37,6 +37,7 @@ class App_Form_ConfirmEmail extends Zend_Form
     		)
     	);
     	$captcha->setRequired(true);
+    	$captcha->setLabel('Verify');
     	$this->addElement($captcha);
     	
     	$next = new Zend_Form_Element_Submit('next');

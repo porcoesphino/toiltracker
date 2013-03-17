@@ -1,8 +1,15 @@
-<div class="span12 content">
-	<div class="banner">
-    	<h2>Password Recovery</h2>
-    </div>
-	<h3>Step 1 of 3</h3>
+<div class="span3">
+	<?php
+		//$options['ulClass'] = 'nav nav-tabs nav-stacked';
+		//$navContainer = Zend_Registry::get('app_sub_nav');
+		//echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+	?>
+</div>
+
+<div class="span9 content">
+	<h3>Password Recovery</h3>
+	<p>Step 1 of 3</p>
+	
 	<?php
 		$errorMessages = $this->form->getErrorMessages();
 		if($errorMessages != null) {
