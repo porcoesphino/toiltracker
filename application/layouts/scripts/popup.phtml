@@ -1,0 +1,65 @@
+<?php echo $this->getHelper('Doctype')->setDoctype('HTML5'); ?>
+<html>
+    <head>
+    	<?php
+    		echo $this->getHelper('HeadTitle')->headTitle('ToilTracker');
+    	
+    		$this->getHelper('HeadMeta')->setCharset('UTF-8');
+    		$this->getHelper('HeadMeta')->setHttpEquiv('X-UA-Compatible', 'IE=edge,chrome=1');
+    		$this->getHelper('HeadMeta')->appendName('keywords', '');
+    		$this->getHelper('HeadMeta')->appendName('description', '');
+    		$this->getHelper('HeadMeta')->appendName('viewport', 'width=device-width, initial-scale=1.0');
+    		echo $this->getHelper('HeadMeta');
+    	?>
+
+    	<style type="text/css">
+    	
+    		.container {
+    			border: 1px solid #8E959C;
+    			margin: 10px;
+    			padding: 20px;
+    			-webkit-border-radius: 15px;
+				-moz-border-radius: 15px;
+				border-radius: 15px;
+    		}
+    		
+    		hr {
+    			border: 1px solid #8E959C;
+    		}
+
+			h3 {
+				color: #2F353E;
+				font-family: 'Open Sans',Helvetica,Arial,sans-serif;
+				font-size: 24.5px;
+				line-height: 40px;
+				margin:0;
+				padding: 15px 0 15px 0;
+			}
+			
+			p {
+				color: #8E959C;
+			    font-family: 'Open Sans',Helvetica,Arial,sans-serif;
+				font-size: 14px;
+			    font-weight: normal;
+			    line-height: 1.5em;
+			    margin: 0;
+			    padding: 0 0 17px 0;
+			}
+			
+		</style>
+    </head>
+    <body>
+
+        <div class="container">
+        	<div class="row">
+				<?php echo $this->layout()->content; ?>
+				<hr>
+			</div>
+
+            <footer>
+                <p>&copy; ToilTracker 2012</p>
+            </footer>
+            
+        </div>
+    </body>
+</html>
