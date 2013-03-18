@@ -53,8 +53,12 @@
     		<div class="sub-navbar">
 				<div class="container">
 					<?php
-						$navContainer = Zend_Registry::get('app_gateway_nav');
-						echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+						if(Zend_Registry::isRegistered('app_main_nav')) {
+
+							$options['ulClass'] = 'nav';	
+							$navContainer = Zend_Registry::get('app_gateway_nav');
+							echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+						}
 					?>
 				</div>
 			</div>

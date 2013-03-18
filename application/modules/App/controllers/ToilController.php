@@ -13,7 +13,7 @@ class App_ToilController extends Zend_Controller_Action
     	
     	$forceRedirect = false;
     	$action = $this->getRequest()->getActionName();
-    	if(($action == 'index') || ($action == 'post')) {
+    	if(($action == 'index') || ($action == 'post') || ($action == 'empty-history')) {
 
     		$employeeId = $this->getRequest()->getParam('employeeid');
     		 
@@ -72,12 +72,31 @@ class App_ToilController extends Zend_Controller_Action
     		);
     	}
     }
+    
+    public function emptyHistoryAction() {
+    	
+    }
 
     public function indexAction()
     {
-        //Get all toil entries for the current employee.    	 
         $employeeId = $this->getRequest()->getParam('employeeid');
-        $this->view->toilList = $this->_mapper->fetchSummaries($employeeId);
+        $toilArray = $this->_mapper->fetchSummaries($employeeId);
+        if(empty($toilArray)) {
+        	
+        	$employeeId = $this->getRequest()->getParam('employeeid');
+        	$redirector = $this->_helper->getHelper('Redirector');
+        	$redirector->gotoRoute(
+        		array(
+        			'employeeid' => $employeeId,
+        			'action' => 'empty-history',
+        			'controller' => 'Toil',
+        			'module' => 'App'
+        		),
+        		'module_full_path_employeeid',
+        		true
+        	);
+        }
+        $this->view->toilList = $toilArray;
     }
 
     public function postAction()

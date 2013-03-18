@@ -104,21 +104,23 @@ class App_Form_Register extends Zend_Form
         $this->addElement($terms);
         
         
-        //Captcha
+        //Captcha. Note this relies on the vowels being modified in Zend_Captcha_Word, until
+        //a better solution can be found.
         $captcha = new Zend_Form_Element_Captcha(
         	'captcha',
         	array(
         		'captcha' => array(
 					'captcha' => 'Image',
 					'font' => APPLICATION_PATH . '/../public/captcha/font/Verdana.ttf',
-					'fontSize' => '26',
+					'fontSize' => '30',
 					'wordLen' => 5,
-					'height' => '60',
+					'height' => '90',
 					'width' => '180',
 					'imgDir' => APPLICATION_PATH.'/../public/captcha/images/',
 					'imgUrl' => '/captcha/images/',
-					'dotNoiseLevel' => 50,
-					'lineNoiseLevel' => 5
+					'dotNoiseLevel' => 25,
+					'lineNoiseLevel' => 2,
+        			'useNumbers' => false
 				)
         	)
         );

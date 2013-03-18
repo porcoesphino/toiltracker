@@ -53,7 +53,7 @@ class App_Plugins_AppNavigation extends Zend_Controller_Plugin_Abstract {
 		if(Zend_Auth::getInstance()->hasIdentity()) {
 		
 			$pages[] = new Zend_Navigation_Page_Mvc(array(
-				'label' => 'Employee summary',
+				'label' => 'Team Summary',
 				'module' => 'App',
 				'controller' => 'Employee',
 				'action' => 'index',
@@ -88,66 +88,77 @@ class App_Plugins_AppNavigation extends Zend_Controller_Plugin_Abstract {
 	
 			return;
 		}
-	
-		$employeeId = $request->getParam('employeeid');
-		$toilId = $request->getParam('id');
-	
-		if($request->getActionName() == 'index') {
-				
-			if($request->getControllerName() == 'Employee') {
-					
-				$this->_configureEmployeeSubLinks();
-			}
-			else if($request->getControllerName() == 'Toil') {
-					
-				$this->_configureToilSubLinks($employeeId, $toilId);
-			}
-		}
+		
+		$this->_configureEmployeeSubLinks($request);
+		$this->_configureToilSubLinks($request);
 	}
 	
-	protected function _configureEmployeeSubLinks() {
+	protected function _configureEmployeeSubLinks($request) {
+		
+		if($request->getControllerName() != 'Employee') {
+			
+			return;
+		}
+		
+		if(!preg_match("/^index$|^empty-team$/", $request->getActionName())) {
+			
+			return;
+		}
 		
 		$pages = array();
 		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'Add employee',
-			'module' => 'App',
-			'controller' => 'Employee',
-			'action' => 'post',
-			'route' => 'module_full_path',
+				'label' => 'Add employee',
+				'module' => 'App',
+				'controller' => 'Employee',
+				'action' => 'post',
+				'route' => 'module_full_path',
 		));
-		
+			
 		$container = new Zend_Navigation();
 		$container->addPages($pages);
 		Zend_Registry::set('app_sub_nav', $container);
 	}
 	
-	protected function _configureToilSubLinks($employeeId, $toilId) {
+	protected function _configureToilSubLinks($request) {
+		
+		if($request->getControllerName() != 'Toil') {
+				
+			return;
+		}
+		
+		if(!preg_match("/^index$|^empty-history$/", $request->getActionName())) {
+			
+			return;
+		}
+		
+		$employeeId = $request->getParam('employeeid');
+		$toilId = $request->getParam('id');
 		
 		$pages = array();
 		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'Record toil accrued',
-			'module' => 'App',
-			'controller' => 'Toil',
-			'action' => 'post',
-			'params' => array(
-				'employeeid' => $employeeId,
-				'toilaction' => 'accrue'
-			),
-			'route' => 'module_full_path_employeeid_action'
+				'label' => 'Record toil accrued',
+				'module' => 'App',
+				'controller' => 'Toil',
+				'action' => 'post',
+				'params' => array(
+						'employeeid' => $employeeId,
+						'toilaction' => 'accrue'
+				),
+				'route' => 'module_full_path_employeeid_action'
+		));
+			
+		$pages[] = new Zend_Navigation_Page_Mvc(array(
+				'label' => 'Record toil used',
+				'module' => 'App',
+				'controller' => 'Toil',
+				'action' => 'post',
+				'params' => array(
+						'employeeid' => $employeeId,
+						'toilaction' => 'use'
+				),
+				'route' => 'module_full_path_employeeid_action'
 		));
 		
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-			'label' => 'Record toil used',
-			'module' => 'App',
-			'controller' => 'Toil',
-			'action' => 'post',
-			'params' => array(
-				'employeeid' => $employeeId,
-				'toilaction' => 'use'
-			),
-			'route' => 'module_full_path_employeeid_action'
-		));
-	
 		$container = new Zend_Navigation();
 		$container->addPages($pages);
 		Zend_Registry::set('app_sub_nav', $container);

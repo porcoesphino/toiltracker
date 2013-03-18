@@ -1,29 +1,104 @@
 <?php echo $this->getHelper('Doctype')->setDoctype('HTML5'); ?>
 <html>
-<head>
-	<?php echo $this->getHelper('HeadMeta')->setCharset('UTF-8'); ?>
-</head>
-<body>
-<div id="content">
-	
-	<h1>DEFAULT</h1>
-	<div id="gateway_nav">
-		<?php
-			$navContainer = Zend_Registry::get('default_gateway_nav');
-			echo $this->getHelper('Navigation')->menu()->render($navContainer);
-		?>
-	</div>
-	
-	<div id="main_nav">
-		<?php
-			$navContainer = Zend_Registry::get('default_main_nav');
-			echo $this->getHelper('Navigation')->menu()->render($navContainer);
-		?>
-	</div>
-	
-	<div id="main">
-		<?php echo $this->layout()->content; ?>
-	</div>
-</div>
-</body>
+    <head>
+    	<?php
+    		echo $this->getHelper('HeadTitle')->headTitle('ToilTracker');
+    	
+    		$this->getHelper('HeadMeta')->setCharset('UTF-8');
+    		$this->getHelper('HeadMeta')->setHttpEquiv('X-UA-Compatible', 'IE=edge,chrome=1');
+    		$this->getHelper('HeadMeta')->appendName('keywords', '');
+    		$this->getHelper('HeadMeta')->appendName('description', '');
+    		$this->getHelper('HeadMeta')->appendName('viewport', 'width=device-width, initial-scale=1.0');
+    		echo $this->getHelper('HeadMeta');
+    		
+    		$this->getHelper('HeadLink')->appendStylesheet('/swiss/css/bootstrap.min.css');
+    		$this->getHelper('HeadLink')->appendStylesheet('/swiss/css/style.css');
+    		$this->getHelper('HeadLink')->appendStylesheet('/app/css/login.css');
+    		$this->getHelper('HeadLink')->appendStylesheet('/swiss/css/font-awesome.css');
+    		echo $this->getHelper('HeadLink');
+    		
+    		$this->getHelper('HeadScript')->appendFile(
+				'/swiss/js/html5-3.6-respond-1.1.0.min.js', 
+				'text/javascript',
+				array(
+					'conditional' => 'lt IE 9'
+				)
+    		);
+    		echo $this->getHelper('HeadScript');
+    	?>
+    	
+    	<style type="text/css">
+
+			li.sidebar_element {
+				font-family: 'Open Sans',Helvetica,Arial,sans-serif;
+				font-weight: 600;
+				color: #666666;
+				border: 1px solid #DDDDDD;
+				padding: 10px;
+				margin-top: 5px;
+			}
+		</style>
+
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <i class="icon icon-reorder"></i> Menu
+                    </a>
+                    <a class="brand" href="index.html">ToilTracker</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <?php
+								if(Zend_Registry::isRegistered('default_main_nav')) {
+					
+									$options['ulClass'] = 'nav';
+									$navContainer = Zend_Registry::get('default_main_nav');
+									echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+								}
+							?>
+						</ul>
+                    </div>
+                </div>
+            </div>
+    		<div class="sub-navbar">
+				<div class="container">
+					<?php
+						if(Zend_Registry::isRegistered('default_main_nav')) {
+							
+							$options['ulClass'] = 'nav';
+							$navContainer = Zend_Registry::get('default_gateway_nav');
+							echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+						}
+					?>
+				</div>
+			</div>
+        </div>
+
+        <div class="container wrapper">
+        	<div class="row">
+				<?php echo $this->layout()->content; ?>
+				<hr>
+			</div>
+
+            <footer>
+                <p>&copy; ToilTracker 2012</p>
+            </footer>
+            
+        </div>
+
+        <?php 
+        	$this->getHelper('HeadScript')->appendFile(
+				'http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js', 
+				'text/javascript');
+			$this->getHelper('HeadScript')->appendScript(
+				'window.jQuery || document.write(\'<script src="/swiss/js/jquery-1.8.0.min.js"></script>\'',
+				'text/javascript');
+			$this->getHelper('HeadScript')->appendFile(
+				'/swiss/js/bootstrap.min.js',
+				'text/javascript');
+			echo $this->getHelper('HeadScript');
+        ?>
+    </body>
 </html>

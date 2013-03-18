@@ -44,12 +44,31 @@ class App_EmployeeController extends Zend_Controller_Action
 	        }
         }
     }
+    
+    public function emptyTeamAction() {
+    	
+    }
 
     public function indexAction()
     {
     	$user = Zend_Auth::getInstance()->getStorage()->read();
     	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
-        $this->view->employees = $employeeHelper->fetchSummaries($user->getTeamId());
+        $employeeArray = $employeeHelper->fetchSummaries($user->getTeamId());
+        if(empty($employeeArray)) {
+
+        	$redirector = $this->_helper->getHelper('Redirector');
+        	$redirector->gotoRoute(
+        		array(
+        			'action' => 'empty-team',
+        			'controller' => 'Employee',
+        			'module' => 'App'
+        		),
+        		'module_full_path',
+        		true
+        	);
+        }
+        
+        $this->view->employees = $employeeArray;
     }
 
     public function postAction()
@@ -159,8 +178,6 @@ class App_EmployeeController extends Zend_Controller_Action
         	true
         );
     }
-
-
 }
 
 
