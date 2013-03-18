@@ -1,0 +1,18 @@
+<div class="span3">
+	<?php
+		if(Zend_Registry::isRegistered('app_sub_nav')) {
+			$options['ulClass'] = 'nav nav-tabs nav-stacked';
+			$navContainer = Zend_Registry::get('app_sub_nav');
+			echo $this->getHelper('Navigation')->menu()->renderMenu($navContainer, $options);
+		}
+	?>
+</div>
+
+<div class="span9 content">
+	<h3>Team Summary</h3>
+	
+	<div class="well">
+    	You do not currently have any employees listed in your team. Please use the link on the left of the page
+    	to add employees to your team.
+	</div>
+</div>
