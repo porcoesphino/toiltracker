@@ -2,6 +2,19 @@
 
 class App_Form_ToilSearch extends Zend_Form
 {
+	protected $_currentEmployeeId;
+	
+	public function __construct($employeeId) {
+		
+		$this->_currentEmployeeId = $employeeId;
+		parent::__construct();
+	}
+	
+	public function setCurrentEmployeeId($employeeId) {
+		
+		$this->_currentEmployeeId = $employeeId;
+	}
+	
     public function init()
     {
     	$this->setName('toil_search');
@@ -15,7 +28,7 @@ class App_Form_ToilSearch extends Zend_Form
     	if(empty($employeeArray)) {
     		//BAD
     	}
-    	
+    	    	
     	$modifiedArray = array();
     	foreach($employeeArray as $currentEmployee) {
     		$key = $currentEmployee->getId();
@@ -26,6 +39,7 @@ class App_Form_ToilSearch extends Zend_Form
     	$employees = new Zend_Form_Element_Select('employeeid');
     	$employees->setRequired(true);
     	$employees->addMultiOptions($modifiedArray);
+    	$employees->setValue($this->_currentEmployeeId);
     	$this->addElement($employees);
     	 
     	$retrieve = new Zend_Form_Element_Submit('retrieve');

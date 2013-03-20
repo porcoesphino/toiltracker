@@ -8,6 +8,33 @@
 
 <div class="span9 content">
 	<h3>Toil History</h3>
+	
+	<div class="well display stats">
+    	<div class="row-fluid">
+        	<div class="span6">
+        	
+            	<form id="<?php echo $this->form->getName(); ?>"
+					name="<?php echo $this->form->getName(); ?>"
+					action="<?php echo $this->form->getAction(); ?>"
+					method="<?php echo $this->form->getMethod(); ?>"
+					class="form-inline">
+					
+                	<div class="wiki-search">
+                		<?php echo $this->form->employeeid; ?>
+                		<?php echo $this->form->retrieve; ?>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="span6">
+            	<h2 style="color: green;">14</h2>
+                <small>hours </small>
+                <h2 style="color: green;">10</h2>
+                <small>minutes avaiable</small>
+            </div>
+        </div>
+    </div>
+                    
 	<table class="table table-bordered table-striped">
     	<thead>
         	<tr>

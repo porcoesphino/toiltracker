@@ -96,6 +96,9 @@ class App_ToilController extends Zend_Controller_Action
         		true
         	);
         }
+        
+        $toilSearch = new App_Form_ToilSearch($employeeId);
+        $this->view->form = $toilSearch;
         $this->view->toilList = $toilArray;
     }
 
