@@ -13,7 +13,33 @@ class App_ToilController extends Zend_Controller_Action
     	
     	$forceRedirect = false;
     	$action = $this->getRequest()->getActionName();
-    	if(($action == 'index') || ($action == 'post') || ($action == 'empty-history')) {
+    	if($action == 'index') {
+    		
+    		$user = Zend_Auth::getInstance()->getStorage()->read();
+    		$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
+    		
+    		$employeeId = $this->getRequest()->getParam('employeeid');
+    		if((empty($employeeId)) || ($employeeId == ':employeeid')) {
+    			
+    			//Check to ensure that there is at least one employee managed by the user,
+    			//otherwise redirect
+    			$employees = $employeeHelper->fetchSummaries($user->getTeamId());
+    			if(empty($employees)) {
+    			
+    				$forceRedirect = true;
+    			}
+    		}
+    		else {
+    			
+    			//Check to ensure that the employee exists and is managed by the user.
+    			if(!$employeeHelper->isValidEmployee($employeeId, $user)) {
+    				 
+    				$forceRedirect = true;
+    			}
+    			
+    		}
+    	}
+    	else if($action == 'post') {
 
     		$employeeId = $this->getRequest()->getParam('employeeid');
     		 
@@ -74,18 +100,30 @@ class App_ToilController extends Zend_Controller_Action
     }
 
     public function indexAction()
-    {
-        $employeeId = $this->getRequest()->getParam('employeeid');
-        $toilArray = $this->_mapper->fetchSummaries($employeeId);
-        $this->view->isToilHistoryAvailable = true;
-        if(empty($toilArray)) {
-        	
-        	$this->view->isToilHistoryAvailable = false;
-        }
+    {    	
+    	$employeeId = $this->getRequest()->getParam('employeeid');
+    	if(empty($employeeId)) {
+    		
+    		$this->view->isEmployeeSelected = false;
+    	}
+    	else {
+    		
+    		$this->view->isEmployeeSelected = true;
+    		
+	        $toilArray = $this->_mapper->fetchSummaries($employeeId);
+	        if(empty($toilArray)) {
+	        	
+	        	$this->view->isToilHistoryAvailable = false;
+	        }
+	        else {
+	        	
+	        	$this->view->isToilHistoryAvailable = true;
+	        }
+	        $this->view->toilList = $toilArray;
+    	}
         
         $toilSearch = new App_Form_ToilSearch($employeeId);
         $this->view->form = $toilSearch;
-        $this->view->toilList = $toilArray;
     }
 
     public function postAction()

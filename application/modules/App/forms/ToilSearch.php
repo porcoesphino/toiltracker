@@ -6,13 +6,16 @@ class App_Form_ToilSearch extends Zend_Form
 	
 	public function __construct($employeeId) {
 		
-		$this->_currentEmployeeId = $employeeId;
-		parent::__construct();
-	}
-	
-	public function setCurrentEmployeeId($employeeId) {
+		if(empty($employeeId)) {
+			
+			$this->_currentEmployeeId = 0;
+		}
+		else {
+			
+			$this->_currentEmployeeId = $employeeId;
+		}
 		
-		$this->_currentEmployeeId = $employeeId;
+		parent::__construct();
 	}
 	
     public function init()
@@ -26,10 +29,18 @@ class App_Form_ToilSearch extends Zend_Form
     	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
     	$employeeArray = $employeeHelper->fetchSummaries($user->getTeamId());
     	if(empty($employeeArray)) {
-    		//BAD
+    		
+    		//Re-route to dashboard?
+    		Zend_Debug::dump('NO EMPLOYEES');
+    		die();
     	}
     	    	
     	$modifiedArray = array();
+    	if(empty($this->_currentEmployeeId)) {
+    		
+    		$modifiedArray[0] = 'Please select';
+    	}
+    	
     	foreach($employeeArray as $currentEmployee) {
     		$key = $currentEmployee->getId();
     		$value = $currentEmployee->getName();
@@ -59,6 +70,11 @@ class App_Form_ToilSearch extends Zend_Form
     			$currentElement->addFilter('StripTags');
     		}
     	}
+    }
+    
+    public function setCurrentEmployeeId($employeeId) {
+    
+    	$this->_currentEmployeeId = $employeeId;
     }
 }
 

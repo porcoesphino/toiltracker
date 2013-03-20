@@ -61,6 +61,14 @@ class App_Plugins_AppNavigation extends Zend_Controller_Plugin_Abstract {
 			));
 			
 			$pages[] = new Zend_Navigation_Page_Mvc(array(
+					'label' => 'Toil History',
+					'module' => 'App',
+					'controller' => 'Toil',
+					'action' => 'index',
+					'route' => 'module_partial_path'
+			));
+			
+			$pages[] = new Zend_Navigation_Page_Mvc(array(
 				'label' => 'Settings',
 				'module' => 'App',
 				'controller' => 'ChangePassword',
