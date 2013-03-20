@@ -34,49 +34,56 @@
             </div>
         </div>
     </div>
-                    
-	<table class="table table-bordered table-striped">
-    	<thead>
-        	<tr>
-            	<th>Date</th>
-                <th>Duration</th>
-                <th>Type</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-        	<?php foreach($this->toilList as $currentToil): ?>	
-        	<tr>
-            	<td><?php echo $currentToil->getDate() ?></td>
-            	<td><?php echo $currentToil->getDuration() ?></td>
-            	<td>
-            		<?php 
-            		if($currentToil->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
-						echo 'Accrued ';
-					}
-					else {
-						echo 'Used ';
-					}
-					?>
-            	</td>
-            	
-            	<td>
-            		<a href="<?php 
-            			$toilPutLink = '/App/Toil/put/id/' . $currentToil->getId();
-            			$toilPutLink .= '/employeeid/' . $currentToil->getEmployeeId();
-            			echo $toilPutLink; 
-            			?>">Edit</a>
-            	</td>
-            	<td>
-            		<a href="<?php 
-            			$toilDeleteLink = '/App/Toil/delete/id/' . $currentToil->getId();
-            			$toilDeleteLink .= '/employeeid/' . $currentToil->getEmployeeId();
-            			echo $toilDeleteLink; 
-            			?>">Delete</a>
-            	</td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+       
+    <?php if(!$this->isToilHistoryAvailable): ?>
+		<div class="well">
+	    	You do not currently have any TOIL history recorded for this employee. Please use the links on the left of the page
+	    	to record TOIL accrued and used by this employee.
+		</div>
+	<?php else: ?>             
+		<table class="table table-bordered table-striped">
+	    	<thead>
+	        	<tr>
+	            	<th>Date</th>
+	                <th>Duration</th>
+	                <th>Type</th>
+	                <th>Edit</th>
+	                <th>Delete</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	        	<?php foreach($this->toilList as $currentToil): ?>	
+	        	<tr>
+	            	<td><?php echo $currentToil->getDate() ?></td>
+	            	<td><?php echo $currentToil->getDuration() ?></td>
+	            	<td>
+	            		<?php 
+	            		if($currentToil->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
+							echo 'Accrued ';
+						}
+						else {
+							echo 'Used ';
+						}
+						?>
+	            	</td>
+	            	
+	            	<td>
+	            		<a href="<?php 
+	            			$toilPutLink = '/App/Toil/put/id/' . $currentToil->getId();
+	            			$toilPutLink .= '/employeeid/' . $currentToil->getEmployeeId();
+	            			echo $toilPutLink; 
+	            			?>">Edit</a>
+	            	</td>
+	            	<td>
+	            		<a href="<?php 
+	            			$toilDeleteLink = '/App/Toil/delete/id/' . $currentToil->getId();
+	            			$toilDeleteLink .= '/employeeid/' . $currentToil->getEmployeeId();
+	            			echo $toilDeleteLink; 
+	            			?>">Delete</a>
+	            	</td>
+	            </tr>
+	            <?php endforeach; ?>
+	        </tbody>
+	    </table>
+    <?php endif; ?>
 </div>

@@ -72,29 +72,15 @@ class App_ToilController extends Zend_Controller_Action
     		);
     	}
     }
-    
-    public function emptyHistoryAction() {
-    	
-    }
 
     public function indexAction()
     {
         $employeeId = $this->getRequest()->getParam('employeeid');
         $toilArray = $this->_mapper->fetchSummaries($employeeId);
+        $this->view->isToilHistoryAvailable = true;
         if(empty($toilArray)) {
         	
-        	$employeeId = $this->getRequest()->getParam('employeeid');
-        	$redirector = $this->_helper->getHelper('Redirector');
-        	$redirector->gotoRoute(
-        		array(
-        			'employeeid' => $employeeId,
-        			'action' => 'empty-history',
-        			'controller' => 'Toil',
-        			'module' => 'App'
-        		),
-        		'module_full_path_employeeid',
-        		true
-        	);
+        	$this->view->isToilHistoryAvailable = false;
         }
         
         $toilSearch = new App_Form_ToilSearch($employeeId);
