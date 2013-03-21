@@ -134,41 +134,40 @@ class App_Plugins_AppNavigation extends Zend_Controller_Plugin_Abstract {
 			return;
 		}
 		
-		if(!preg_match("/^index$|^empty-history$/", $request->getActionName())) {
+		
+		if(preg_match("/^index$/", $request->getActionName())) {
 			
-			return;
+			$employeeId = $request->getParam('employeeid');
+			$toilId = $request->getParam('id');
+			
+			$pages = array();
+			$pages[] = new Zend_Navigation_Page_Mvc(array(
+					'label' => 'Record toil accrued',
+					'module' => 'App',
+					'controller' => 'Toil',
+					'action' => 'post',
+					'params' => array(
+							'employeeid' => $employeeId,
+							'toilaction' => 'accrue'
+					),
+					'route' => 'module_full_path_employeeid_action'
+			));
+				
+			$pages[] = new Zend_Navigation_Page_Mvc(array(
+					'label' => 'Record toil used',
+					'module' => 'App',
+					'controller' => 'Toil',
+					'action' => 'post',
+					'params' => array(
+							'employeeid' => $employeeId,
+							'toilaction' => 'use'
+					),
+					'route' => 'module_full_path_employeeid_action'
+			));
+			
+			$container = new Zend_Navigation();
+			$container->addPages($pages);
+			Zend_Registry::set('app_sub_nav', $container);
 		}
-		
-		$employeeId = $request->getParam('employeeid');
-		$toilId = $request->getParam('id');
-		
-		$pages = array();
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-				'label' => 'Record toil accrued',
-				'module' => 'App',
-				'controller' => 'Toil',
-				'action' => 'post',
-				'params' => array(
-						'employeeid' => $employeeId,
-						'toilaction' => 'accrue'
-				),
-				'route' => 'module_full_path_employeeid_action'
-		));
-			
-		$pages[] = new Zend_Navigation_Page_Mvc(array(
-				'label' => 'Record toil used',
-				'module' => 'App',
-				'controller' => 'Toil',
-				'action' => 'post',
-				'params' => array(
-						'employeeid' => $employeeId,
-						'toilaction' => 'use'
-				),
-				'route' => 'module_full_path_employeeid_action'
-		));
-		
-		$container = new Zend_Navigation();
-		$container->addPages($pages);
-		Zend_Registry::set('app_sub_nav', $container);
 	}
 }

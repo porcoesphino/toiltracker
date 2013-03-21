@@ -25,8 +25,17 @@ class App_ToilController extends Zend_Controller_Action
     			//otherwise redirect
     			$employees = $employeeHelper->fetchSummaries($user->getTeamId());
     			if(empty($employees)) {
-    			
-    				$forceRedirect = true;
+
+		    		$redirector = $this->_helper->getHelper('Redirector');
+		   			$redirector->gotoRoute(
+						array(
+		    				'action' => 'no-employees',
+		    				'controller' => 'Toil',
+		    				'module' => 'App'
+		    			),
+		    			'module_full_path',
+		    			true
+		    		);
     			}
     		}
     		else {
@@ -120,10 +129,24 @@ class App_ToilController extends Zend_Controller_Action
 	        	$this->view->isToilHistoryAvailable = true;
 	        }
 	        $this->view->toilList = $toilArray;
+	        
+	        $user = Zend_Auth::getInstance()->getStorage()->read();
+	        $employeeMapper = new Application_Model_EmployeeMapper();
+	        $toilBalance = $employeeMapper->fetchBalance($employeeId);
+	        $this->view->hours = $toilBalance->getHours();
+	        $this->view->minutes = $toilBalance->getMinutes();
+	        $this->view->isOwed = $toilBalance->getIsOwed();
+	        
+	        $employee = $employeeMapper->get($employeeId, $user);
+	        $this->view->employee = $employee;
     	}
         
         $toilSearch = new App_Form_ToilSearch($employeeId);
         $this->view->form = $toilSearch;
+    }
+    
+    public function noEmployeesAction() {
+    	
     }
 
     public function postAction()

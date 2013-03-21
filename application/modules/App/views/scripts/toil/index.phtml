@@ -6,6 +6,16 @@
 	?>
 </div>
 
+<style type="text/css">
+	.toil_owed {
+		color: #B40404;
+	}
+	
+	.toil_remaining {
+		color: green;
+	}
+</style>
+
 <div class="span9 content">
 	<h3>Toil History</h3>
 	
@@ -29,10 +39,26 @@
             <div class="span6">
             	<?php if($this->isEmployeeSelected): ?>
             	
-	            	<h2 style="color: green;">14</h2>
+            		<?php
+            			if($this->isOwed) {
+							$balanceClass = 'class="toil_owed"';
+							$balanceText = 'owed';
+						} 
+						else {
+							$balanceClass = 'class="toil_remaining"';
+							$balanceText = 'remaining';
+						}
+            		?>
+	            	<h2 <?php echo $balanceClass; ?>>
+	            		<?php echo $this->hours; ?>
+	            	</h2>
 	                <small>hours </small>
-	                <h2 style="color: green;">10</h2>
-	                <small>minutes avaiable</small>
+	                <h2 <?php echo $balanceClass; ?>>
+	                	<?php echo $this->minutes; ?>
+	                </h2>
+	                <small>
+	                	minutes <?php echo $balanceText; ?>
+	                </small>
 	                
                 <?php endif; ?>
             </div>
@@ -44,8 +70,8 @@
 	    <?php if(!$this->isToilHistoryAvailable): ?>
 	    
 			<div class="well">
-		    	You do not currently have any TOIL history recorded for this employee. Please use the links on the left of the page
-		    	to record TOIL accrued and used by this employee.
+		    	<strong><?php echo $this->employee->getName(); ?></strong> does not currently have any TOIL history.
+		    	Please use the links on the left of the page to record TOIL accrued and used by this employee.
 			</div>
 			
 		<?php else: ?>   

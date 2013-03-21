@@ -27,12 +27,20 @@ class App_Form_ToilSearch extends Zend_Form
     	//Retrieve the list of employees and their ids.
     	$user = Zend_Auth::getInstance()->getStorage()->read();
     	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
-    	$employeeArray = $employeeHelper->fetchSummaries($user->getTeamId());
+    	$employeeArray = $employeeHelper->fetchSummaries($user->getTeamId());    	
     	if(empty($employeeArray)) {
     		
-    		//Re-route to dashboard?
-    		Zend_Debug::dump('NO EMPLOYEES');
-    		die();
+    		//Something went wrong. Re-route to dashboard
+    		$redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector');
+   			$redirector->gotoRoute(
+				array(
+    				'action' => 'index',
+    				'controller' => 'Employee',
+    				'module' => 'App'
+    			),
+    			'module_partial_path',
+    			true
+    		);
     	}
     	    	
     	$modifiedArray = array();

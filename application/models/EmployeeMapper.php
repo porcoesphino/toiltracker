@@ -9,6 +9,15 @@ class Application_Model_EmployeeMapper
 		$this->_table = new Application_Model_DbTable_Employees();
 	}
 	
+	public function fetchBalance($employeeId) {
+	
+		$toilBalance = new Application_Model_ToilBalance();
+		$toilBalance->setHours(0);
+		$toilBalance->setMinutes(0);
+		$toilBalance->setIsOwed(false);
+		return $toilBalance;
+	}
+	
 	public function fetchSummaries($teamId) {
 		
 		$employees = new Application_Model_DbTable_Employees();
