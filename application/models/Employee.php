@@ -16,6 +16,7 @@ class Application_Model_Employee
 	public function getName() { return $this->_name; }
 	public function getEmail() { return $this->_email; }
 	public function getToilHistory() { return $this->_toilHistory; }
+	
 	public function getToilBalance() { 
 		
 		/*
