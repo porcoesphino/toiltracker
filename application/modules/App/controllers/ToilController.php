@@ -23,7 +23,7 @@ class App_ToilController extends Zend_Controller_Action
     			
     			//Check to ensure that there is at least one employee managed by the user,
     			//otherwise redirect
-    			$employees = $employeeHelper->fetchSummaries($user->getTeamId());
+    			$employees = $employeeHelper->getAll($user->getTeamId());
     			if(empty($employees)) {
 
 		    		$redirector = $this->_helper->getHelper('Redirector');
@@ -119,7 +119,7 @@ class App_ToilController extends Zend_Controller_Action
     		
     		$this->view->isEmployeeSelected = true;
     		
-	        $toilArray = $this->_mapper->fetchSummaries($employeeId);
+	        $toilArray = $this->_mapper->getAll($employeeId);
 	        if(empty($toilArray)) {
 	        	
 	        	$this->view->isToilHistoryAvailable = false;
@@ -132,12 +132,11 @@ class App_ToilController extends Zend_Controller_Action
 	        
 	        $user = Zend_Auth::getInstance()->getStorage()->read();
 	        $employeeMapper = new Application_Model_EmployeeMapper();
-	        $toilBalance = $employeeMapper->fetchBalance($employeeId);
-	        $this->view->hours = $toilBalance->getHours();
-	        $this->view->minutes = $toilBalance->getMinutes();
-	        $this->view->isOwed = $toilBalance->getIsOwed();
-	        
 	        $employee = $employeeMapper->get($employeeId, $user);
+	        
+	        $this->view->hours = $employee->getToilBalance()->getHours();
+	        $this->view->minutes = $employee->getToilBalance()->getMinutes();
+	        $this->view->isOwed = $employee->getToilBalance()->getIsOwed();
 	        $this->view->employee = $employee;
     	}
         

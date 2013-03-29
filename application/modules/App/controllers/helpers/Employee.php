@@ -17,17 +17,16 @@ class App_Controllers_Helpers_Employee extends Zend_Controller_Action_Helper_Abs
 		return $returnVal;
 	}
 	
-	public function fetchSummaries($teamId) {
-		
+	public function get($user, $employeeId) {
+	
 		$employeeMapper = new Application_Model_EmployeeMapper();
-		return $employeeMapper->fetchSummaries($teamId);
+		return $employeeMapper->get($user, $employeeId);
 	}
 	
-	public function get($user, $employeeId) {
+	public function getAll($teamId) {
 		
 		$employeeMapper = new Application_Model_EmployeeMapper();
-		$employee = $employeeMapper->get($user, $employeeId);
-		return array('id' => $employee->getId(), 'name' => $employee->getName(), 'email' => $employee->getEmail());
+		return $employeeMapper->getAll($teamId);
 	}
 	
 	public function post($teamId, $data) {

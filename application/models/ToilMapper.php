@@ -9,7 +9,43 @@ class Application_Model_ToilMapper
 		$this->_table = new Application_Model_DbTable_Toil();
 	}
 	
-	public function fetchSummaries($employeeId) {
+	/**
+	 * @todo Rename this as 'get' and change so that it retuns content only. A
+	 * view helper can populate this data into the Toil table.
+	 * @param unknown $id
+	 * @return multitype:unknown number NULL Ambigous <>
+	 */
+	public function getConfiguredFormContent($id) {
+	
+		$row = $this->_table->find($id)->current();
+	
+		$date = explode('-', $row->date);
+	
+		if($row->duration < 60) {
+			$hours = 0;
+			$minutes = $row->duration;
+		}
+		else {
+			$hours = (int)($row->duration / 60);
+			$minutes = $row->duration - ($hours * 60);
+		}
+			
+		//Populate employee into form.
+		$employeeId = $row->employee_id;
+		$values = array(
+				'id' => $row->id,
+				'employee_id' => $row->employee_id,
+				'days' => $date[2],
+				'months' => $date[1],
+				'years' => $date[0],
+				'hours' => $hours,
+				'minutes' => $minutes,
+				'notes' => $row->notes
+		);
+		return $values;
+	}
+	
+	public function getAll($employeeId) {
 	
 		$select = $this->_table->select()->where('employee_id = ?', $employeeId);
 		$rowset = $this->_table->fetchAll($select);
@@ -87,6 +123,13 @@ class Application_Model_ToilMapper
 		$date = $formValues['years'] . '-' . $formValues['months'] . '-' . $formValues['days'];
 		$duration = ($formValues['hours'] * 60) + $formValues['minutes'];
 		
+		//Retrieve employee
+		//If is ACCRUE
+		//toilBalance->addhours() $toilBalance->addMinutes(); $employee->save()
+		//else
+		//toilBalance->subtractHours() $toilBalance->subtractMinutes()
+		//employeeMapper->update(employee)
+		
 		if($toilAction == 'accrue') { $toilAction = 1; }
 		else { $toilAction = 2; }
 		
@@ -118,36 +161,6 @@ class Application_Model_ToilMapper
 	
 		$where = $this->_table->getAdapter()->quoteInto('id = ?', $id);
 		$this->_table->delete($where);
-	}
-	
-	public function getConfiguredFormContent($id) {
-	
-		$row = $this->_table->find($id)->current();
-	
-		$date = explode('-', $row->date);
-	
-		if($row->duration < 60) {
-			$hours = 0;
-			$minutes = $row->duration;
-		}
-		else {
-			$hours = (int)($row->duration / 60);
-			$minutes = $row->duration - ($hours * 60);
-		}
-			
-		//Populate employee into form.
-		$employeeId = $row->employee_id;
-		$values = array(
-				'id' => $row->id,
-				'employee_id' => $row->employee_id,
-				'days' => $date[2],
-				'months' => $date[1],
-				'years' => $date[0],
-				'hours' => $hours,
-				'minutes' => $minutes,
-				'notes' => $row->notes
-		);
-		return $values;
 	}
 }
 

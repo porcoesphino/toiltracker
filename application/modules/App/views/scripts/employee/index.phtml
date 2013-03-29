@@ -22,7 +22,25 @@
         	<?php foreach($this->employees as $currentEmployee): ?>	
         	<tr>
             	<td><?php echo $currentEmployee->getName(); ?></td>
-            	<td><?php echo $currentEmployee->getToilAvailable(); ?></td>
+            	<td>
+            		<?php
+            			$hours = $currentEmployee->getToilBalance()->getHours(); 
+            			$minutes = $currentEmployee->getToilBalance()->getMinutes();
+            			$isOwed = $currentEmployee->getToilBalance()->getIsOwed();
+            			if(($hours == 0) && ($minutes == 0)) {
+							$symbol = '';
+						}
+						else {
+	            			if($isOwed) { 
+								$symbol = '- ';
+							}
+							else {
+								$symbol = '+ ';
+							}
+						}
+            			echo $symbol . $hours . ' hrs ' . $minutes . ' mins';
+            		?>
+            	</td>
             	<td>
             		<a href="/App/Toil/index/employeeid/<?php echo $currentEmployee->getId(); ?>">View</a>
             	</td>

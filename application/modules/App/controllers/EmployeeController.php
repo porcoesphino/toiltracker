@@ -53,7 +53,7 @@ class App_EmployeeController extends Zend_Controller_Action
     {
     	$user = Zend_Auth::getInstance()->getStorage()->read();
     	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
-        $employeeArray = $employeeHelper->fetchSummaries($user->getTeamId());
+        $employeeArray = $employeeHelper->getAll($user->getTeamId());
         if(empty($employeeArray)) {
 
         	$redirector = $this->_helper->getHelper('Redirector');
