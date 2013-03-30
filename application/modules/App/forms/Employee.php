@@ -52,5 +52,12 @@ class App_Form_Employee extends Zend_Form
     		}
     	}
     }
+    
+    public function populate(Application_Model_Employee $employee) {
+    	
+    	$this->getElement('id')->setValue($employee->getId());
+    	$this->getElement('name')->setValue($employee->getName());
+    	$this->getElement('email')->setValue($employee->getEmail());
+    }
 }
 

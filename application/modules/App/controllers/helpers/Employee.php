@@ -37,9 +37,13 @@ class App_Controllers_Helpers_Employee extends Zend_Controller_Action_Helper_Abs
 	
 	public function put($data) {
 	
+		$employee = new Application_Model_Employee();
+		$employee->setId($data['id']);
+		$employee->setName($data['name']);
+		$employee->setEmail($data['email']);
+
 		$employeeMapper = new Application_Model_EmployeeMapper();
-		$where = $employeeMapper->getAdapter()->quoteInto('id = ?', $data['id']);
-		$employeeMapper->update($data, $where);
+		$employeeMapper->update($employee);
 	}
 	
 	public function delete($id) {

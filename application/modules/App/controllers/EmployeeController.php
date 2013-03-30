@@ -154,8 +154,8 @@ class App_EmployeeController extends Zend_Controller_Action
         	$employeeHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('Employee');
         	
         	$user = Zend_Auth::getInstance()->getStorage()->read();
-        	$values = $employeeHelper->get($employeeId, $user);
-        	$form->populate($values);
+        	$employee = $employeeHelper->get($employeeId, $user);
+        	$form->populate($employee);
         }
         $this->view->form = $form;
     }

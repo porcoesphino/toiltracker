@@ -89,5 +89,9 @@ class Application_Model_ToilBalance
 		$this->_balanceInMinutes -= $minutes;
 	}
 	
+	public function getAmountInMinutes() {
+		
+		return $this->_balanceInMinutes;
+	}
 }
 

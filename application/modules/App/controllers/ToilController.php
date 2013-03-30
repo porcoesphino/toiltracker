@@ -170,10 +170,33 @@ class App_ToilController extends Zend_Controller_Action
         	
         	if($form->isValid($request->getPost())) {
         		
+        		$user = Zend_Auth::getInstance()->getStorage()->read();
+        		$employeeMapper = new Application_Model_EmployeeMapper();
+        		$employee = $employeeMapper->get($employeeId, $user);
+        		
+        		//Populate the values into a Toil object.
+        		$formValues = $form->getValues();
+        		
+        		$newToilRecord = new Application_Model_Toil();
+        		$newToilRecord->setEmployeeId($employeeId);
+        		$newToilRecord->setNote($formValues['notes']);
+        		
+        		if($toilAction == 'accrue') {
+        			$newToilRecord->setToilAction(Application_Model_Toil::ACCRUETOIL);
+        		}
+        		else {
+        			$newToilRecord->setToilAction(Application_Model_Toil::USETOIL);
+        		}
+        		
+        		$durationInMinutes = ($formValues['hours'] * 60) + $formValues['minutes'];
+        		$newToilRecord->setDuration($durationInMinutes);
+        		
+        		$dateString = $formValues['years'] . '-' . $formValues['months'] . '-' . $formValues['days'];
+        		$newToilRecord->setDate(new Zend_Date($dateString));
+        		
         		//Write to the database.
-        		$formValues = $form->getValues();        		
-        		$this->_mapper->insert($toilAction, $formValues);
-        		        		
+        		$this->_mapper->insert($employee, $newToilRecord);
+        			
         		$redirector = $this->_helper->getHelper('Redirector');
         		$redirector->gotoRoute(
         			array(
@@ -211,12 +234,14 @@ class App_ToilController extends Zend_Controller_Action
     public function putAction()
     {
     	$request = $this->getRequest();
+    	$toilId = $request->getParam('id');
+    	$employeeId = $request->getParam('employeeid');
     	
     	$form = new App_Form_Toil();
     	$form->setMethod(Zend_Form::METHOD_POST);
     	
-    	$action = '/App/Toil/put/id/' . $request->getParam('id');
-    	$action .= '/employeeid/' . $request->getParam('employeeid');
+    	$action = '/App/Toil/put/id/' . $toilId;
+    	$action .= '/employeeid/' . $employeeId;
     	$form->setAction($action);
     	$form->getElement('save')->setLabel('Update');
     	
@@ -225,16 +250,42 @@ class App_ToilController extends Zend_Controller_Action
     		//Process the form.
     		if($form->isValid($request->getPost())) {
     			
+    			//Retrieve the user so that we can retrieve the employee.
+    			$user = Zend_Auth::getInstance()->getStorage()->read();
+    			$employeeMapper = new Application_Model_EmployeeMapper();
+    			$employee = $employeeMapper->get($employeeId, $user);
+    			
+    			//Populate the values into a Toil object.
     			$formValues = $form->getValues();
-       			$this->_mapper->update($formValues);
-    	       			
+    			$updatedToilRecord = new Application_Model_Toil();
+    			$updatedToilRecord->setId($toilId);
+    			$updatedToilRecord->setEmployeeId($employeeId);
+    			$updatedToilRecord->setNote($formValues['notes']);
+
+    			$currentToilRecord = $this->_mapper->get($toilId);
+    			if($currentToilRecord->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
+    				$updatedToilRecord->setToilAction(Application_Model_Toil::ACCRUETOIL);
+    			}
+    			else {
+    				$updatedToilRecord->setToilAction(Application_Model_Toil::USETOIL);
+    			}
+    			
+    			$durationInMinutes = ($formValues['hours'] * 60) + $formValues['minutes'];
+    			$updatedToilRecord->setDuration($durationInMinutes);
+    			
+    			$dateString = $formValues['years'] . '-' . $formValues['months'] . '-' . $formValues['days'];
+    			$updatedToilRecord->setDate(new Zend_Date($dateString));
+    			
+    			//Write to the database.
+    			$this->_mapper->update($employee, $updatedToilRecord);
+    			    	       			
     			$redirector = $this->_helper->getHelper('Redirector');
     			$redirector->gotoRoute(
     				array(
     					'action' => 'index',
     					'controller' => 'Toil',
     					'module' => 'App',
-    					'employeeid' => $formValues['employee_id']
+    					'employeeid' => $employeeId
     				),
     				'module_full_path_employeeid',
     				true
@@ -244,10 +295,6 @@ class App_ToilController extends Zend_Controller_Action
     	
     			//Zend_Form to auto display issues with the form, and to inject
     			//user submitted content.
-    			
-    			//Ensure the employeeid is identified.
-    			$formValues = $form->getValues();
-    			$employeeId = $formValues['employee_id'];
     		}
     	}
     	else {
@@ -255,7 +302,6 @@ class App_ToilController extends Zend_Controller_Action
     		//Display the form populated with the values for the current toil record.    		
     		$values = $this->_mapper->getConfiguredFormContent($this->getRequest()->getParam('id'));
     		$form->populate($values);
-    		$employeeId = $values['employee_id'];
     	}
     	$this->view->employee_id = $employeeId;
     	$this->view->form = $form;
@@ -266,8 +312,9 @@ class App_ToilController extends Zend_Controller_Action
     {
         $id = $this->getRequest()->getParam('id');
         $employeeId = $this->getRequest()->getParam('employeeid');
-      
-        $this->_mapper->delete($id);
+      	
+        $user = Zend_Auth::getInstance()->getStorage()->read();
+        $this->_mapper->delete($id, $user);
         
         $redirector = $this->_helper->getHelper('Redirector');
         $redirector->gotoRoute(

@@ -45,6 +45,33 @@ class Application_Model_ToilMapper
 		return $values;
 	}
 	
+	/**
+	 * @todo Implement graceful handling of the empty toil record.
+	 * @param unknown $toilId
+	 * @return Application_Model_Toil
+	 */
+	public function get($toilId) {
+		
+		$select = $this->_table->select()->where('id = ?', $toilId);
+		$row = $this->_table->fetchRow($select);
+		
+		if(empty($row)) {
+			die();
+		}
+		
+		$toil = new Application_Model_Toil();
+		$toil->setId($row->id);
+		$toil->setEmployeeId($row->employee_id);
+		$toil->setToilAction($row->toil_action);
+		$toil->setDuration($row->duration);
+		
+		$date = new Zend_Date($row->date);
+		$toil->setDate($date);
+		$toil->setNote($row->notes);
+		
+		return $toil;
+	}
+	
 	public function getAll($employeeId) {
 	
 		$select = $this->_table->select()->where('employee_id = ?', $employeeId);
@@ -99,7 +126,6 @@ class Application_Model_ToilMapper
 		}
 		catch(Zend_Exception $e) {
 			
-			Zend_Debug::dump('HERE7');die();
 			return false;
 		}
 		
@@ -118,49 +144,153 @@ class Application_Model_ToilMapper
 		return $row->employee_id;
 	}
 	
-	public function insert($toilAction, $formValues) {
+	public function insert(Application_Model_Employee $employee, Application_Model_Toil $newToilRecord) {
 		
-		$date = $formValues['years'] . '-' . $formValues['months'] . '-' . $formValues['days'];
-		$duration = ($formValues['hours'] * 60) + $formValues['minutes'];
-		
-		//Retrieve employee
-		//If is ACCRUE
-		//toilBalance->addhours() $toilBalance->addMinutes(); $employee->save()
-		//else
-		//toilBalance->subtractHours() $toilBalance->subtractMinutes()
-		//employeeMapper->update(employee)
-		
-		if($toilAction == 'accrue') { $toilAction = 1; }
-		else { $toilAction = 2; }
-		
+		$date = $newToilRecord->getDate()->toString('YYYY-MM-dd');
 		$data = array(
-				'employee_id' => $formValues['employee_id'],
-				'toil_action' => $toilAction,
-				'date' => $date,
-				'duration' => $duration,
-				'notes' => $formValues['notes']
+			'employee_id' => $newToilRecord->getEmployeeId(),
+			'toil_action' => $newToilRecord->getToilAction(),
+			'date' => $date,
+			'duration' => $newToilRecord->getDuration(),
+			'notes' => $newToilRecord->getNote()
 		);
 		
-		$this->_table->insert($data);
+		$success = $this->_table->insert($data);
+		if($success) {
+			
+			//Update the Toil balance for the current employee
+			$durationInMinutes = $newToilRecord->getDuration();
+			$hours = (int)($durationInMinutes / 60);
+			$minutes = $durationInMinutes % 60;
+			$toilBalance = $employee->getToilBalance();
+			
+			if($newToilRecord->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
+					
+				$toilBalance->addHours($hours);
+				$toilBalance->addMinutes($minutes);
+			}
+			else {
+				
+				$toilBalance->subtractHours($hours);
+				$toilBalance->subtractMinutes($minutes);
+			}
+			
+			$employeeMapper = new Application_Model_EmployeeMapper();
+			$employeeMapper->update($employee);
+		}
 	}
 	
-	public function update($formValues) {
+	public function update(Application_Model_Employee $employee, Application_Model_Toil $modifiedToilRecord) {
+		
+		$toilId = $modifiedToilRecord->getId();
+		$employeeId = $modifiedToilRecord->getEmployeeId();
+		$toilAction = $modifiedToilRecord->getToilAction();
+		$date = $modifiedToilRecord->getDate()->toString('YYYY-MM-dd');
+		$durationInMinutes = $modifiedToilRecord->getDuration();
+		$notes = $modifiedToilRecord->getNote();
+		
+		//Prepare the update data array based on the data provided.
+		$data = array();
+		if(!empty($employeeId)) {
+			$data['employee_id'] = $employeeId;
+		}
+		
+		if(!empty($date)) {
+			$data['date'] = $date;
+		}
+		
+		if(!empty($durationInMinutes)) {
+			$data['duration'] = $durationInMinutes;
+		}
+		
+		if(!empty($notes)) {
+			$data['notes'] = $notes;
+		}
+		
+		//Retrieve the Toil record as it currently exists in the dbase so that this can be used
+		//to later modify the toil balance.
+		$currentToilRecord = $this->get($toilId);
 	
-		$date = $formValues['years'] . '-' . $formValues['months'] . '-' . $formValues['days'];
-		$duration = ($formValues['hours'] * 60) + $formValues['minutes'];
-		$data = array(
-				'date' => $date,
-				'duration' => $duration,
-				'notes' => $formValues['notes']
-		);
-		$where = $this->_table->getAdapter()->quoteInto("id = ?", $formValues['id']);
-		$this->_table->update($data, $where);
+		//Now update the Toil record in the dbase.
+		$where = $this->_table->getAdapter()->quoteInto("id = ?", $toilId);
+		$success = $this->_table->update($data, $where);
+		
+		if($success) {
+				
+			//Update the Toil balance for the current employee. First remove from the balance
+			//the Toil record as it previously was. Then update the balance with the Toil
+			//record as it currently is. Then save the balance.
+			$previousHours = (int)($currentToilRecord->getDuration() / 60);
+			$previousMinutes = $currentToilRecord->getDuration() % 60;
+			
+			$newHours = (int)($durationInMinutes / 60);
+			$newMinutes = $durationInMinutes % 60;
+			
+			$toilBalance = $employee->getToilBalance();
+			
+			if($modifiedToilRecord->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
+					
+				//Remove the old Toil accrual from the Toil balance.
+				$toilBalance->subtractHours($previousHours);
+				$toilBalance->subtractMinutes($previousMinutes);
+				
+				//Add the new Toil accrual to the Toil balance.
+				$toilBalance->addHours($newHours);
+				$toilBalance->addMinutes($newMinutes);
+			}
+			else {
+	
+				//Add the old Toil usage back to the Toil balance.
+				$toilBalance->addHours($previousHours);
+				$toilBalance->addMinutes($previousMinutes);
+				
+				//Now deduct the new Toil usage from the Toil balance.
+				$toilBalance->subtractHours($newHours);
+				$toilBalance->subtractMinutes($newMinutes);
+			}
+				
+			$employeeMapper = new Application_Model_EmployeeMapper();
+			$employeeMapper->update($employee);
+		}
 	}
 	
-	public function delete($id) {
+	public function delete($id, Application_Model_User $user) {
 	
-		$where = $this->_table->getAdapter()->quoteInto('id = ?', $id);
-		$this->_table->delete($where);
+		//Get the toil record that is to be deleted.
+		$toil = $this->get($id);
+		
+		//Attempt to delete the toil record.
+		$where = $this->_table->getAdapter()->quoteInto('id = ?', $toil->getId());
+		$isSuccessful = $this->_table->delete($where);
+		
+		if(!$isSuccessful) {
+			
+			//Something went wrong. Return to prevent further errors.
+			return;
+		}
+		
+		$durationInMinutes = $toil->getDuration();
+		$hours = (int)($durationInMinutes / 60);
+		$minutes = $durationInMinutes % 60;
+		
+		//Identify the employee to whom this toil record belongs.
+		$employeeMapper = new Application_Model_EmployeeMapper();
+		$employee = $employeeMapper->get($toil->getEmployeeId(), $user);
+		$toilBalance = $employee->getToilBalance();
+		
+		//Update the toil balance associated with the employee to reflect deletion.
+		if($toil->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
+				
+			$toilBalance->subtractHours($hours);
+			$toilBalance->subtractMinutes($minutes);
+		}
+		else {
+				
+			$toilBalance->addHours($hours);
+			$toilBalance->addMinutes($minutes);
+		}
+		
+		$employeeMapper->update($employee);
 	}
 }
 

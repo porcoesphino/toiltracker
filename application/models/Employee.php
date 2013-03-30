@@ -19,19 +19,6 @@ class Application_Model_Employee
 	
 	public function getToilBalance() { 
 		
-		/*
-		$summary = 0;
-		foreach($this->_toilHistory as $currentToil) {
-				
-			if($currentToil->getToilAction() == Application_Model_Toil::ACCRUETOIL) {
-				$summary += $currentToil->getDuration();
-			}
-			else {
-				$summary -= $currentToil->getDuration();
-			}
-		}
-		return $summary;
-		 */
 		return $this->_toilBalance; 
 	}
 

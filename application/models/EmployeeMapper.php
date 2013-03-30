@@ -86,19 +86,34 @@ class Application_Model_EmployeeMapper
 		return $primaryKey;
 	}
 	
-	/**
-	 * @todo Change the arguments to accept an employee object only?
-	 * @param unknown $data
-	 * @param unknown $where
-	 */
-	public function update($data, $where) {
-	
+	public function update(Application_Model_Employee $employee) {
+		
+		//Assemble the data and update the table where applicable.
+		$teamId = $employee->getTeamId();
+		$name = $employee->getName();
+		$email = $employee->getEmail();
+		$balance = $employee->getToilBalance();
+		
+		$data = array();
+		if(!empty($teamId)) {
+			$data['team_id'] = $teamId;
+		}
+		
+		if(!empty($name)) {
+			$data['name'] = $name;
+		}
+		
+		if(!empty($email)) {
+			$data['email'] = $email;
+		}
+		
+		if(!empty($balance)) {
+			$data['toil_balance'] = $balance->getAmountInMinutes();
+		}
+		
 		$table = new Application_Model_DbTable_Employees();
-		$insertData = array(
-			'name' => $data['name'],
-			'email' => $data['email']
-		);
-		$table->update($insertData, $where);
+		$where = $table->getAdapter()->quoteInto('id = ?', $employee->getId());
+		$table->update($data, $where);
 	}
 	
 	public function delete($id) {
